@@ -8,7 +8,7 @@ const icons = [
 const Sidebar = () => {
   return (
     // On crée une div qui va contenir toutes les icônes
-    <div className="activity">
+    <div className="bg-black w-[117px] h-[780px] justify-center items-center flex flex-col gap-7">
       {/* On utilise map pour parcourir la liste d'icônes et en afficher une par une  */}
       {icons.map((icon, index) => (
         // les icônes sont mises dans une div avec une classe correspondant à son nom
