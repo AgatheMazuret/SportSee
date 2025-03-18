@@ -1,15 +1,18 @@
 function Header() {
   return (
-    <div className="w-full h-[91px] bg-black text-white flex justify-between items-center px-8">
-      <div className="header__logo">
+    <div className="w-full h-[91px] bg-black text-white flex flex-wrap md:flex-nowrap items-center gap-[10%] px-6 lg:px-8">
+      {/* Logo */}
+      <div className="headerLogo">
         <img
-          className="w-[145px] h-[47px]"
+          className="w-[120px] lg:w-[145px] h-[40px] lg:h-[47px]"
           src="/logo.svg"
           alt="Logo SportSee"
         />
       </div>
-      <div className="flex justify-center items-center">
-        <ul className="flex flex-row text-2xl gap-50">
+
+      {/* Menu */}
+      <nav className="w-full lg:w-auto flex justify-center lg:justify-end">
+        <ul className="flex flex-wrap lg:flex-nowrap text-lg lg:text-2xl  xl:gap-[50%] lg:gap-[20%]">
           <li>
             <a href="#">Accueil</a>
           </li>
@@ -23,7 +26,7 @@ function Header() {
             <a href="#">Communauté</a>
           </li>
         </ul>
-      </div>
+      </nav>
     </div>
   );
 }

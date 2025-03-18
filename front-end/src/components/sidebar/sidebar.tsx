@@ -7,16 +7,22 @@ const icons = [
 
 const Sidebar = () => {
   return (
-    // On crée une div qui va contenir toutes les icônes
-    <div className="bg-black w-[117px] h-[780px] justify-center items-center flex flex-col gap-7">
-      {/* On utilise map pour parcourir la liste d'icônes et en afficher une par une  */}
-      {icons.map((icon, index) => (
-        // les icônes sont mises dans une div avec une classe correspondant à son nom
-        <div key={index} className={icon.alt}>
-          {/* On affiche l'image avec son chemin src et son texte  */}
-          <img src={icon.src} alt={icon.alt} />
-        </div>
-      ))}
+    <div className="bg-black w-[117px] h-[881px] flex flex-col items-center">
+      {/* Conteneur des icônes */}
+      <div className="flex flex-col items-center gap-4 lg:gap-7 flex-1 justify-center">
+        {icons.map((icon, index) => (
+          <div key={index} className={icon.alt}>
+            <img src={icon.src} alt={icon.alt} />
+          </div>
+        ))}
+      </div>
+
+      {/* Copyright en bas */}
+      <div className="mb-2 lg:mb-5">
+        <p className="text-white text-xs [writing-mode:vertical-rl] rotate-180">
+          Copyright, SportSee 2020
+        </p>
+      </div>
     </div>
   );
 };
