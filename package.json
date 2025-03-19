@@ -1,0 +1,8 @@
+{
+  "name": "sportsee",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm -F \"*\" dev"
+  }
+}
+

@@ -1,5 +1,5 @@
 {
-  "name": "P9-front-end-dashboard",
+  "name": "back",
   "version": "1.0.0",
   "description": "Backend for the 9th project of the new path Front-end Developper",
   "main": "index/app.js",
@@ -15,7 +15,7 @@
     "idx": "^2.5.6"
   },
   "scripts": {
-    "dev": "node_modules/.bin/nodemon app/index.js",
+    "dev": "nodemon app/index.js",
     "start": "node app/index.js"
   }
 }
