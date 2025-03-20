@@ -9,7 +9,7 @@ const App = () => {
       <div className="flex">
         <Sidebar />
         <div className="flex-1 px-[117px] py-[68px]">
-          <Hello />
+          <Hello userId={12} /> {/* Passer userId à Hello */}
         </div>
       </div>
     </>
