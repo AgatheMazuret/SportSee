@@ -7,6 +7,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from "recharts";
 
 // Définition des types pour les données récupérées
@@ -56,15 +57,60 @@ const SectionLengthChart = () => {
 
   console.log("Données finales envoyées au graphique :", data);
 
+  // Tableau des premières lettres des jours
+  const dayAbbreviations = ["L", "M", "M", "J", "V", "S", "D"]; // Lundi, Mardi, Mercredi, etc.
+
+  // Fonction de formatage du Tooltip
+  const customTooltip = ({ payload, label }: any) => {
+    if (payload && payload.length > 0) {
+      const { sessionLength } = payload[0].payload;
+      const day = dayAbbreviations[label - 1]; // Récupérer le jour par son indice
+      return (
+        <div
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            color: "white",
+            padding: "5px",
+            borderRadius: "5px",
+          }}
+        >
+          <p>{`Jour: ${day}`}</p>
+          <p>{`Durée de session: ${sessionLength} min`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
-    <LineChart data={data} style={{ backgroundColor: "#FBFBFB" }}>
-      <CartesianGrid vertical={false} strokeDasharray="5 5" />
-      <XAxis dataKey="day" />
-      <YAxis orientation="right" />
-      <Tooltip />
-      <Legend layout="horizontal" verticalAlign="top" align="right" />
-      <Line dataKey="sessionLength" stroke="#E60000" />
-    </LineChart>
+    <ResponsiveContainer width={258} height={263}>
+      <LineChart data={data} style={{ backgroundColor: "red" }}>
+        <CartesianGrid vertical={false} horizontal={false} />
+        <YAxis hide={true} />
+        <XAxis
+          dataKey="day"
+          tickFormatter={(value) => dayAbbreviations[value - 1]}
+          tick={{ fill: "white" }}
+          axisLine={false}
+          tickLine={false}
+        />
+        <Tooltip content={customTooltip} />
+        <Legend
+          layout="horizontal"
+          verticalAlign="top"
+          align="right"
+          formatter={() => "Durée moyenne des sessions"}
+        />
+        <Line
+          dataKey="sessionLength"
+          stroke="white"
+          strokeWidth={3}
+          type="monotone"
+          strokeLinejoin="round"
+          dot={false}
+        />
+      </LineChart>
+    </ResponsiveContainer>
   );
 };
 
