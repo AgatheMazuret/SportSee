@@ -36,7 +36,7 @@ const Hello: React.FC<HelloProps> = ({ userId }) => {
         </a>
       </p>
       {firstName && firstName !== "Erreur" && (
-        <p className="text-lg">
+        <p className="text-lg mt-[41px]">
           Félicitations ! Vous avez explosé vos objectifs hier 👏
         </p>
       )}

@@ -83,34 +83,44 @@ const SectionLengthChart = () => {
   };
 
   return (
-    <ResponsiveContainer width={258} height={263}>
-      <LineChart data={data} style={{ backgroundColor: "red" }}>
-        <CartesianGrid vertical={false} horizontal={false} />
-        <YAxis hide={true} />
-        <XAxis
-          dataKey="day"
-          tickFormatter={(value) => dayAbbreviations[value - 1]}
-          tick={{ fill: "white" }}
-          axisLine={false}
-          tickLine={false}
-        />
-        <Tooltip content={customTooltip} />
-        <Legend
-          layout="horizontal"
-          verticalAlign="top"
-          align="right"
-          formatter={() => "Durée moyenne des sessions"}
-        />
-        <Line
-          dataKey="sessionLength"
-          stroke="white"
-          strokeWidth={3}
-          type="monotone"
-          strokeLinejoin="round"
-          dot={false}
-        />
-      </LineChart>
-    </ResponsiveContainer>
+    <div
+      style={{
+        width: 258,
+        height: 263,
+        borderRadius: 10,
+        overflow: "hidden",
+        backgroundColor: "red",
+      }}
+    >
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data} style={{ backgroundColor: "red" }}>
+          <CartesianGrid vertical={false} horizontal={false} />
+          <YAxis hide={true} />
+          <XAxis
+            dataKey="day"
+            tickFormatter={(value) => dayAbbreviations[value - 1]}
+            tick={{ fill: "white" }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <Tooltip content={customTooltip} />
+          <Legend
+            layout="horizontal"
+            verticalAlign="top"
+            align="right"
+            formatter={() => "Durée moyenne des sessions"}
+          />
+          <Line
+            dataKey="sessionLength"
+            stroke="white"
+            strokeWidth={3}
+            type="monotone"
+            strokeLinejoin="round"
+            dot={false}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 
