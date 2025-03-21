@@ -2,6 +2,7 @@ import Header from "../components/header/header";
 import Sidebar from "../components/sidebar/sidebar";
 import Hello from "../components/hello/hello";
 import ActivityChart from "../components/daily-activity/dailyActivity";
+import SectionLengthChart from "../components/section-length/sectionLength";
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
         <div className="flex-1 px-[117px] py-[68px]">
           <Hello userId={12} />
           <ActivityChart />
+          <SectionLengthChart />
         </div>
       </div>
     </>
