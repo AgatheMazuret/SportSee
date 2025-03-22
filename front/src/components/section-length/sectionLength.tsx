@@ -9,6 +9,9 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { TooltipProps } from "recharts";
+
+type CustomTooltipProps = TooltipProps<number, string>;
 
 // Définition des types pour les données récupérées
 type Length = {
@@ -37,11 +40,6 @@ const SectionLengthChart = () => {
             sessionLength: item.sessionLength, // Utilisation de "sessionLength"
           }));
 
-        console.log(
-          "Données formatées pour le graphique :",
-          formattedLengthData
-        );
-
         setData(formattedLengthData);
         setLoading(false);
       })
@@ -55,16 +53,18 @@ const SectionLengthChart = () => {
     return <div>Chargement des données...</div>;
   }
 
-  console.log("Données finales envoyées au graphique :", data);
-
   // Tableau des premières lettres des jours
   const dayAbbreviations = ["L", "M", "M", "J", "V", "S", "D"]; // Lundi, Mardi, Mercredi, etc.
 
   // Fonction de formatage du Tooltip
-  const customTooltip = ({ payload, label }: any) => {
-    if (payload && payload.length > 0) {
-      const { sessionLength } = payload[0].payload;
-      const day = dayAbbreviations[label - 1]; // Récupérer le jour par son indice
+  const customTooltip: React.FC<CustomTooltipProps> = ({
+    payload = [],
+    label,
+    active,
+  }) => {
+    if (active && payload.length > 0 && label !== undefined) {
+      const sessionLength = payload[0]?.payload?.sessionLength ?? 0;
+      const day = dayAbbreviations[label - 1] || "";
       return (
         <div
           style={{
@@ -81,7 +81,6 @@ const SectionLengthChart = () => {
     }
     return null;
   };
-
   return (
     <div
       style={{

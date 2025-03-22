@@ -40,8 +40,6 @@ const ActivityChart = () => {
             calories: item.calories, // Utilisation de "calories"
           }));
 
-        console.log("Données formatées pour le graphique :", formattedData);
-
         setData(formattedData);
         setLoading(false);
       })
@@ -55,7 +53,6 @@ const ActivityChart = () => {
     return <div>Chargement des données...</div>;
   }
 
-  console.log("Données finales envoyées au graphique :", data);
   // Fonction pour formatter le jour à partir de la date complète (au format 'YYYY-MM-DD')
   const formatDay = (date: string) => {
     const day = new Date(date).getDate(); // Récupérer uniquement le jour du mois

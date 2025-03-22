@@ -8,6 +8,11 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+type DataItem = {
+  kind: number;
+  value: number;
+};
+
 const PerformanceChart = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,13 +27,12 @@ const PerformanceChart = () => {
 
         if (!data || !kind) throw new Error("Format des données incorrect");
 
-        // Transformation des données
-        const formattedData = data.map((item) => ({
+        // Formater les données avec leur libellé
+        const formattedData = data.map((item: DataItem) => ({
           subject: kind[item.kind], // Conversion du kind en libellé
           value: item.value,
         }));
 
-        console.log("Données formatées :", formattedData);
         setData(formattedData);
         setLoading(false);
       })

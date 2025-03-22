@@ -7,7 +7,7 @@ const icons = [
 
 const Sidebar = () => {
   return (
-    <div className="bg-black w-[117px] h-[881px] flex flex-col items-center">
+    <div className="bg-black w-[117px] flex flex-col items-center">
       {/* Conteneur des icônes */}
       <div className="flex flex-col items-center gap-4 lg:gap-7 flex-1 justify-center">
         {icons.map((icon, index) => (
