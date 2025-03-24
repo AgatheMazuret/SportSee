@@ -63,7 +63,7 @@ const ScoreChart = () => {
             stroke="none"
             cornerRadius={10}
           >
-            {data.map((entry, index) => (
+            {data.map((_, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index]} />
             ))}
           </Pie>
