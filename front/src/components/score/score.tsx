@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
-const COLORS = ["#FF0101", "#FBFBFB"];
-
 const ScoreChart = () => {
   const [score, setScore] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,25 +26,11 @@ const ScoreChart = () => {
   if (score === null) return <div>Aucune donnée disponible</div>;
 
   const data = [
-    { name: "Score", value: score * 100 },
-    { name: "Reste", value: 100 - score * 100 },
+    { name: "Score", value: score * 100, color: "#FF0101" },
+    { name: "Reste", value: 100 - score * 100, color: "#FBFBFB" },
   ];
-
   return (
-    <div
-      style={{
-        width: 258,
-        height: 263,
-        backgroundColor: "#FFFFFF",
-        padding: 10,
-        borderRadius: 10,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        position: "relative",
-        boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
-      }}
-    >
+    <div className="w-full h-full rounded-xl overflow-hidden bg-gray-50 relative">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -58,13 +42,13 @@ const ScoreChart = () => {
             innerRadius={80}
             outerRadius={90}
             startAngle={90}
-            endAngle={90 + score * 360}
-            fill="#FF0101"
+            endAngle={90 + 360}
+            fill="#FFF"
             stroke="none"
             cornerRadius={10}
           >
-            {data.map((_, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index]} />
+            {data.map((cell) => (
+              <Cell key={`cell-${cell.name}`} fill={cell.color} />
             ))}
           </Pie>
         </PieChart>

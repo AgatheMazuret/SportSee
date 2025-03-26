@@ -60,7 +60,7 @@ const ActivityChart = () => {
   };
 
   return (
-    <ResponsiveContainer width={835} height={320}>
+    <ResponsiveContainer width="100%" height={320}>
       <BarChart data={data} style={{ backgroundColor: "#FBFBFB" }}>
         <CartesianGrid vertical={false} strokeDasharray="5 5" />
         {/* Personnalisation de l'axe X pour afficher juste le jour */}

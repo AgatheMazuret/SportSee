@@ -82,15 +82,7 @@ const SectionLengthChart = () => {
     return null;
   };
   return (
-    <div
-      style={{
-        width: 258,
-        height: 263,
-        borderRadius: 10,
-        overflow: "hidden",
-        backgroundColor: "red",
-      }}
-    >
+    <div className="w-full h-full rounded-xl overflow-hidden bg-red-500">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} style={{ backgroundColor: "red" }}>
           <CartesianGrid vertical={false} horizontal={false} />

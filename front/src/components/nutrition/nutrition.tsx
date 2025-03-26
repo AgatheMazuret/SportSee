@@ -1,5 +1,28 @@
 import { useEffect, useState } from "react";
 
+interface CardProps {
+  icon: string;
+  title: string;
+  value: number;
+  unit: string;
+}
+
+const Card = ({ icon, title, value, unit }: CardProps) => {
+  return (
+    <div className="flex flex-col w-[238px] h-[124px]">
+      <div className="flex w-full bg-[#FBFBFB] rounded-[10px]">
+        <img className="flex ml-[20px]" src={icon} alt={title} />
+        <div className="flex flex-col justify-center w-[258px] h-[124px]">
+          <p className="text-xl text-center font-bold">
+            {value} {unit}
+          </p>
+          <h3 className="text-sm text-center text-[#74798C]">{title}</h3>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 interface NutritionDataType {
   calorieCount: number;
   proteinCount: number;
@@ -50,7 +73,7 @@ const NutritionData = () => {
   }
 
   return (
-    <div className="conteneur-cards flex gap-4 flex-col items-center">
+    <div className="flex gap-4 flex-col items-center">
       <Card
         icon="/icon-calories.svg"
         title="Calories"
@@ -75,29 +98,6 @@ const NutritionData = () => {
         value={data.lipidCount}
         unit="g"
       />
-    </div>
-  );
-};
-
-interface CardProps {
-  icon: string;
-  title: string;
-  value: number;
-  unit: string;
-}
-
-const Card = ({ icon, title, value, unit }: CardProps) => {
-  return (
-    <div className="flex flex-col w-[238px] h-[124px]">
-      <div className="flex w-[100%] bg-[#FBFBFB] rounded-[10px]">
-        <img className="flex ml-[20px]" src={icon} alt={title} />
-        <div className="flex flex-col justify-center w-[258px] h-[124px]">
-          <p className="text-xl text-center font-bold">
-            {value} {unit}
-          </p>
-          <h3 className="text-sm text-center text-[#74798C]">{title}</h3>
-        </div>
-      </div>
     </div>
   );
 };

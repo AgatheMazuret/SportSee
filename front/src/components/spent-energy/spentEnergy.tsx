@@ -47,15 +47,7 @@ const PerformanceChart = () => {
   if (data.length === 0) return <div>Aucune donnée disponible</div>;
 
   return (
-    <div
-      style={{
-        width: 258,
-        height: 263,
-        backgroundColor: "#282D30",
-        padding: 10,
-        borderRadius: 10,
-      }}
-    >
+    <div className="w-full h-full rounded-xl overflow-hidden bg-[#282D30]">
       <ResponsiveContainer width="100%" height="100%">
         <RadarChart outerRadius={80} data={data}>
           <PolarGrid stroke="#FFFFFF" strokeOpacity={0.5} />

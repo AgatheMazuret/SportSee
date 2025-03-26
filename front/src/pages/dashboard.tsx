@@ -13,18 +13,20 @@ const App = () => {
       <Header />
       <div className="flex ">
         <Sidebar />
-        <div className="flex-1 px-[117px] pt-[68px] pb-[7px]">
-          <div className="mb-[78px]">
+        <div className="flex-1 px-4 md:px-30 pt-16 pb-2">
+          <div className="mb-20">
             <Hello userId={12} />
           </div>
-          <div className="flex gap-[31px]">
-            <ActivityChart />
+          <div className="flex w-full gap-8">
+            <div className="flex-1 flex flex-col gap-8">
+              <ActivityChart />
+              <div className="flex gap-8 w-full">
+                <SectionLengthChart />
+                <SpentEnergyChart />
+                <ScoreChart />
+              </div>
+            </div>
             <NutritionData />
-          </div>
-          <div className="flex gap-8 mt-[28px]">
-            <SectionLengthChart />
-            <SpentEnergyChart />
-            <ScoreChart />
           </div>
         </div>
       </div>
