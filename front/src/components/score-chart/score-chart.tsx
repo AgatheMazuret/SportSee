@@ -30,7 +30,7 @@ const ScoreChart = () => {
     { name: "Reste", value: 100 - score * 100, color: "#FBFBFB" },
   ];
   return (
-    <div className="w-full h-full rounded-xl overflow-hidden bg-gray-50 relative">
+    <div className="w-full h-full rounded-xl overflow-hidden bg-gray-100 relative">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
