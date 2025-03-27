@@ -13,7 +13,7 @@ const App = () => {
       <Header />
       <div className="flex ">
         <Sidebar />
-        <div className="flex-1 px-4 md:px-12 pt-16 pb-2 md:pt-10">
+        <div className="flex-1 p-[68px_70px_70px_65px]">
           <div className="mb-20">
             <Hello userId={12} />
           </div>

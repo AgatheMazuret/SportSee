@@ -9,10 +9,10 @@ interface CardProps {
 
 const Card = ({ icon, title, value, unit }: CardProps) => {
   return (
-    <div className="flex flex-col w-[238px] h-[124px] md:w-[168px]">
-      <div className="flex w-full bg-gray-100 rounded-[10px]">
+    <div className="flex flex-col w-3xs h-[124px] ">
+      <div className="flex w-full bg-gray-100 rounded-xl">
         <img className="flex ml-[20px]" src={icon} alt={title} />
-        <div className="flex flex-col justify-center w-[258px] h-[124px]">
+        <div className="flex flex-col justify-center w-3xs h-[124px]">
           <p className="text-xl text-center font-bold">
             {value} {unit}
           </p>

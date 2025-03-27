@@ -53,18 +53,7 @@ const ScoreChart = () => {
           </Pie>
         </PieChart>
       </ResponsiveContainer>
-      <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          textAlign: "center",
-          fontSize: "18px",
-          fontWeight: "bold",
-          color: "#282D30",
-        }}
-      >
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-lg font-bold text-gray-800">
         <div style={{ fontSize: "24px", fontWeight: "bold" }}>
           {score * 100}%
         </div>

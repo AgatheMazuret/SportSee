@@ -1,3 +1,4 @@
+// src/ActivityChart.tsx
 import { useEffect, useState } from "react";
 import {
   BarChart,
@@ -9,15 +10,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { fetchActivityData } from "./service"; // Importer la fonction depuis service.ts
 
-// Définition des types pour les données récupérées
-type ActivityData = {
-  day: string; // Correspond à la date dans la réponse de l'API
-  kilogram: number; // Correspond au poids dans la réponse de l'API
-  calories: number; // Correspond aux calories brûlées dans la réponse de l'API
-};
-
-// Définition des types pour les données formatées utilisées par le graphique
 type FormattedActivityData = {
   day: string;
   kilogram: number;
@@ -29,24 +23,18 @@ const ActivityChart = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/user/12/activity")
-      .then((response) => response.json())
-      .then((responseData: { data: { sessions: ActivityData[] } }) => {
-        // Transformation des données pour correspondre au format attendu par le graphique
-        const formattedData: FormattedActivityData[] =
-          responseData.data.sessions.map((item: ActivityData) => ({
-            day: item.day, // Utilisation de "day" de la réponse de l'API
-            kilogram: item.kilogram, // Utilisation de "kilogram"
-            calories: item.calories, // Utilisation de "calories"
-          }));
-
-        setData(formattedData);
+    const loadData = async () => {
+      try {
+        const fetchedData = await fetchActivityData(12); // Utiliser l'ID de l'utilisateur
+        setData(fetchedData);
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Erreur lors de la récupération des données:", error);
         setLoading(false);
-      });
+      }
+    };
+
+    loadData();
   }, []);
 
   if (loading) {
@@ -64,10 +52,7 @@ const ActivityChart = () => {
       <BarChart data={data} style={{ backgroundColor: "#FBFBFB" }}>
         <CartesianGrid vertical={false} strokeDasharray="5 5" />
         {/* Personnalisation de l'axe X pour afficher juste le jour */}
-        <XAxis
-          dataKey="day"
-          tickFormatter={formatDay} // Formattage de l'axe X pour afficher seulement le jour
-        />
+        <XAxis dataKey="day" tickFormatter={formatDay} />
         <YAxis orientation="right" />
         <Tooltip />
         <Legend layout="horizontal" verticalAlign="top" align="right" />
