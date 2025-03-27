@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { fetchSessionData, FormattedLengthData } from "./service"; // Importation du service
 import {
   LineChart,
   Line,
@@ -13,50 +14,25 @@ import { TooltipProps } from "recharts";
 
 type CustomTooltipProps = TooltipProps<number, string>;
 
-// Définition des types pour les données récupérées
-type Length = {
-  day: number;
-  sessionLength: number;
-};
-
-// Définition des types pour les données formatées utilisées par le graphique
-type FormattedLengthData = {
-  day: number;
-  sessionLength: number;
-};
-
 const SectionLengthChart = () => {
   const [data, setData] = useState<FormattedLengthData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/user/12/average-sessions")
-      .then((response) => response.json())
-      .then((responseData: { data: { sessions: Length[] } }) => {
-        // Transformation des données pour correspondre au format attendu par le graphique
-        const formattedLengthData: FormattedLengthData[] =
-          responseData.data.sessions.map((item: Length) => ({
-            day: item.day, // Utilisation de "day" de la réponse de l'API
-            sessionLength: item.sessionLength, // Utilisation de "sessionLength"
-          }));
-
-        setData(formattedLengthData);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Erreur lors de la récupération des données:", error);
-        setLoading(false);
-      });
+    const getData = async () => {
+      const fetchedData = await fetchSessionData();
+      setData(fetchedData);
+      setLoading(false);
+    };
+    getData();
   }, []);
 
   if (loading) {
     return <div>Chargement des données...</div>;
   }
 
-  // Tableau des premières lettres des jours
-  const dayAbbreviations = ["L", "M", "M", "J", "V", "S", "D"]; // Lundi, Mardi, Mercredi, etc.
+  const dayAbbreviations = ["L", "M", "M", "J", "V", "S", "D"];
 
-  // Fonction de formatage du Tooltip
   const customTooltip: React.FC<CustomTooltipProps> = ({
     payload = [],
     label,
@@ -81,6 +57,7 @@ const SectionLengthChart = () => {
     }
     return null;
   };
+
   return (
     <div className="w-full h-full rounded-xl overflow-hidden bg-red-500">
       <ResponsiveContainer width="100%" height="100%">

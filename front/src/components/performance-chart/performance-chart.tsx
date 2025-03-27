@@ -7,43 +7,24 @@ import {
   Radar,
   ResponsiveContainer,
 } from "recharts";
-
-type DataItem = {
-  kind: number;
-  value: number;
-};
+import { fetchPerformanceData } from "./service";
 
 const PerformanceChart = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/user/12/performance")
-      .then((response) => response.json())
-      .then((responseData) => {
-        if (!responseData.data) throw new Error("Données manquantes");
+    const getData = async () => {
+      setLoading(true);
+      const result = await fetchPerformanceData(12); // ID utilisateur
+      setData(result);
+      setLoading(false);
+    };
 
-        const { data, kind } = responseData.data;
-
-        if (!data || !kind) throw new Error("Format des données incorrect");
-
-        // Formater les données avec leur libellé
-        const formattedData = data.map((item: DataItem) => ({
-          subject: kind[item.kind], // Conversion du kind en libellé
-          value: item.value,
-        }));
-
-        setData(formattedData);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Erreur de chargement :", error);
-        setLoading(false);
-      });
+    getData();
   }, []);
 
   if (loading) return <div>Chargement...</div>;
-
   if (data.length === 0) return <div>Aucune donnée disponible</div>;
 
   return (

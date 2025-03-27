@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { fetchUserScore } from "./service"; // Importation du service
 
 const ScoreChart = () => {
   const [score, setScore] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/user/12")
-      .then((response) => response.json())
-      .then((responseData) => {
-        if (!responseData.data || responseData.data.todayScore === undefined) {
-          throw new Error("Données manquantes");
-        }
+    const getScore = async () => {
+      try {
+        const userScore = await fetchUserScore(12); // ID utilisateur en paramètre
+        setScore(userScore);
+      } catch (error) {
+        console.error("Erreur lors de la récupération du score :", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        setScore(responseData.data.todayScore);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Erreur de chargement :", error);
-        setLoading(false);
-      });
+    getScore();
   }, []);
 
   if (loading) return <div>Chargement...</div>;
@@ -29,6 +28,7 @@ const ScoreChart = () => {
     { name: "Score", value: score * 100, color: "#FF0101" },
     { name: "Reste", value: 100 - score * 100, color: "#FBFBFB" },
   ];
+
   return (
     <div className="w-full h-full rounded-xl overflow-hidden bg-gray-100 relative">
       <ResponsiveContainer width="100%" height="100%">
