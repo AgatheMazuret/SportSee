@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchNutritionData, NutritionDataType } from "./service"; // Importation du service
-import Card from "../cards";
+import Card from "../card";
 
 const NutritionData = () => {
   const [data, setData] = useState<NutritionDataType | null>(null);
