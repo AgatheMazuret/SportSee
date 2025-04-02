@@ -10,7 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { fetchActivityData } from "./service"; // Importer la fonction depuis service.ts
+import { fetchActivityData } from "../../services/api";
 
 type FormattedActivityData = {
   day: string;

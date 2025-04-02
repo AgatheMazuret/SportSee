@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchSessionData, FormattedLengthData } from "./service"; // Importation du service
+import { fetchSessionData, FormattedLengthData } from "../../services/api"; // Importation du service
 import {
   LineChart,
   Line,

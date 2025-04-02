@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchNutritionData, NutritionDataType } from "./service"; // Importation du service
+import { fetchNutritionData, NutritionDataType } from "../../services/api"; // Importation du service
 import Card from "../card";
 
 const NutritionData = () => {

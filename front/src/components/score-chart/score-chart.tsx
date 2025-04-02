@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { fetchUserScore } from "./service"; // Importation du service
+import { fetchUserScore } from "../../services/api"; // Importation du service
 
 const ScoreChart = () => {
   const [score, setScore] = useState(null);

@@ -7,7 +7,7 @@ import {
   Radar,
   ResponsiveContainer,
 } from "recharts";
-import { fetchPerformanceData } from "./service";
+import { fetchPerformanceData } from "../../services/api";
 
 const PerformanceChart = () => {
   const [data, setData] = useState([]);
