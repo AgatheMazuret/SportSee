@@ -1,5 +1,5 @@
 // src/ActivityChart.tsx
-import { useEffect, useState } from "react";
+
 import {
   BarChart,
   Bar,
@@ -10,34 +10,17 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { fetchActivityData } from "../../services/api";
-
-type FormattedActivityData = {
-  day: string;
-  kilogram: number;
-  calories: number;
-};
+import { fetchActivityData } from "../services/api";
+import { useQuery } from "@tanstack/react-query";
 
 const ActivityChart = () => {
-  const [data, setData] = useState<FormattedActivityData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const activityQuery = useQuery({
+    queryKey: ["activity", 12], // ID de l'utilisateur
+    queryFn: () => fetchActivityData(12), // Appel à la fonction pour récupérer les données
+    staleTime: 1000 * 60 * 5, // Données considérées comme fraîches pendant 5 minutes
+  });
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const fetchedData = await fetchActivityData(12); // Utiliser l'ID de l'utilisateur
-        setData(fetchedData);
-        setLoading(false);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des données:", error);
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
-
-  if (loading) {
+  if (activityQuery.isLoading) {
     return <div>Chargement des données...</div>;
   }
 
@@ -49,7 +32,10 @@ const ActivityChart = () => {
 
   return (
     <ResponsiveContainer width="100%" height={320}>
-      <BarChart data={data} style={{ backgroundColor: "#FBFBFB" }}>
+      <BarChart
+        data={activityQuery.data}
+        style={{ backgroundColor: "#FBFBFB" }}
+      >
         <CartesianGrid vertical={false} strokeDasharray="5 5" />
         {/* Personnalisation de l'axe X pour afficher juste le jour */}
         <XAxis dataKey="day" tickFormatter={formatDay} />

@@ -38,6 +38,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.0.14
         version: 4.0.14(vite@6.2.2(jiti@2.4.2)(lightningcss@1.29.2))
+      '@tanstack/react-query':
+        specifier: ^5.71.3
+        version: 5.71.3(react@18.3.1)
       d3:
         specifier: ^7.9.0
         version: 7.9.0
@@ -621,6 +624,14 @@ packages:
     resolution: {integrity: sha512-y69ztPTRFy+13EPS/7dEFVl7q2Goh1pQueVO8IfGeyqSpcx/joNJXFk0lLhMgUbF0VFJotwRSb9ZY7Xoq3r26Q==}
     peerDependencies:
       vite: ^5.2.0 || ^6
+
+  '@tanstack/query-core@5.71.3':
+    resolution: {integrity: sha512-SW7PXYpKiQCZU5pPOXG2UiHX1oSAxLyxoJiYbQ3aLYiABJW0UnfBZ9PVnO/x4ZCIVK30wfDn0h6Mrsr10q922Q==}
+
+  '@tanstack/react-query@5.71.3':
+    resolution: {integrity: sha512-4GZxKqiMX+CH4CxXiUBNipbqzk2V5jUU8Z4d6J+lSDu8OejcLtjx1hEDJzabFZHwd+ZHCsYLAJmM54kCS1/ekA==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -2354,6 +2365,13 @@ snapshots:
       lightningcss: 1.29.2
       tailwindcss: 4.0.14
       vite: 6.2.2(jiti@2.4.2)(lightningcss@1.29.2)
+
+  '@tanstack/query-core@5.71.3': {}
+
+  '@tanstack/react-query@5.71.3(react@18.3.1)':
+    dependencies:
+      '@tanstack/query-core': 5.71.3
+      react: 18.3.1
 
   '@types/babel__core@7.20.5':
     dependencies:

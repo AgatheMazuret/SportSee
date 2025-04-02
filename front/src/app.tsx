@@ -1,11 +1,15 @@
-import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Dashboard from "./pages/dashboard";
 
-const App: React.FC = () => {
+const queryClient = new QueryClient();
+
+const App = () => {
   return (
-    <div className="app-container">
-      <Dashboard />
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <div className="app-container">
+        <Dashboard />
+      </div>
+    </QueryClientProvider>
   );
 };
 
