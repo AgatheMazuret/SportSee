@@ -1,28 +1,19 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { fetchUserScore } from "../../services/api"; // Importation du service
+import { fetchUserScore } from "../services/api"; // Importation du service
 
 const ScoreChart = () => {
-  const [score, setScore] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const {
+    data: score,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["userScore", 12], // ID utilisateur en paramètre
+    queryFn: () => fetchUserScore(12),
+  });
 
-  useEffect(() => {
-    const getScore = async () => {
-      try {
-        const userScore = await fetchUserScore(12); // ID utilisateur en paramètre
-        setScore(userScore);
-      } catch (error) {
-        console.error("Erreur lors de la récupération du score :", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getScore();
-  }, []);
-
-  if (loading) return <div>Chargement...</div>;
-  if (score === null) return <div>Aucune donnée disponible</div>;
+  if (isLoading) return <div>Chargement...</div>;
+  if (error || score === null) return <div>Aucune donnée disponible</div>;
 
   const data = [
     { name: "Score", value: score * 100, color: "#FF0101" },

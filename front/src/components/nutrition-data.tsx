@@ -1,30 +1,16 @@
-import { useEffect, useState } from "react";
-import { fetchNutritionData, NutritionDataType } from "../../services/api"; // Importation du service
-import Card from "../card";
+import { useQuery } from "@tanstack/react-query";
+import { fetchNutritionData, NutritionDataType } from "../services/api"; // Importation du service
+import Card from "./card";
 
 const NutritionData = () => {
-  const [data, setData] = useState<NutritionDataType | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, error, isLoading } = useQuery<NutritionDataType, Error>({
+    queryKey: ["nutritionData", 12],
+    queryFn: () => fetchNutritionData(12),
+  });
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const nutritionData = await fetchNutritionData(12); // Appel à la fonction du service
-        setData(nutritionData);
-      } catch (error) {
-        setError((error as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getData();
-  }, []);
-
-  if (loading)
+  if (isLoading)
     return <p className="text-center text-gray-500">Chargement...</p>;
-  if (error) return <p className="text-center text-red-500">{error}</p>;
+  if (error) return <p className="text-center text-red-500">{error.message}</p>;
   if (!data) return <p className="text-center">Aucune donnée disponible</p>;
 
   return (

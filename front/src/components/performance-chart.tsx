@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   RadarChart,
   PolarGrid,
@@ -7,25 +7,16 @@ import {
   Radar,
   ResponsiveContainer,
 } from "recharts";
-import { fetchPerformanceData } from "../../services/api";
+import { fetchPerformanceData } from "../services/api";
 
 const PerformanceChart = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["performanceData", 12], // Remplace 12 par l'ID utilisateur dynamique si nécessaire
+    queryFn: () => fetchPerformanceData(12),
+  });
 
-  useEffect(() => {
-    const getData = async () => {
-      setLoading(true);
-      const result = await fetchPerformanceData(12); // ID utilisateur
-      setData(result);
-      setLoading(false);
-    };
-
-    getData();
-  }, []);
-
-  if (loading) return <div>Chargement...</div>;
-  if (data.length === 0) return <div>Aucune donnée disponible</div>;
+  if (isLoading) return <div>Chargement...</div>;
+  if (!data.length) return <div>Aucune donnée disponible</div>;
 
   return (
     <div className="w-full h-full rounded-xl overflow-hidden bg-[#282D30]">

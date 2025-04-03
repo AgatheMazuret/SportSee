@@ -3,9 +3,9 @@ import Sidebar from "../sidebar";
 import Hello from "../hello";
 import ActivityChart from "../components/activity-chart";
 import SectionLengthChart from "../components/section-length-chart";
-import SpentEnergyChart from "../components/performance-chart/performance-chart";
-import ScoreChart from "../components/score-chart/score-chart";
-import NutritionData from "../components/nutrition-data/nutrition-data";
+import SpentEnergyChart from "../components/performance-chart";
+import ScoreChart from "../components/score-chart";
+import NutritionData from "../components/nutrition-data";
 
 const App = () => {
   return (
