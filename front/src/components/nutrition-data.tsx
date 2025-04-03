@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchNutritionData, NutritionDataType } from "../services/api"; // Importation du service
 import Card from "./card";
 
-const NutritionData = () => {
+const NutritionData = ({ userId: propUserId }: { userId?: number }) => {
   // Récupérer l'URL actuelle
   const url = window.location.href;
 
@@ -11,7 +11,7 @@ const NutritionData = () => {
   const match = url.match(regex);
 
   // Si un userId est trouvé, l'utiliser. Sinon, utiliser 12 par défaut.
-  const userId = match ? parseInt(match[1], 10) : 12;
+  const userId = propUserId ?? (match ? parseInt(match[1], 10) : 12);
 
   const { data, error, isLoading } = useQuery<NutritionDataType, Error>({
     queryKey: ["nutritionData", userId],

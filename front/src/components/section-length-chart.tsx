@@ -18,6 +18,12 @@ const fetchData = async (): Promise<FormattedLengthData[]> => {
   return await fetchSessionData();
 };
 
+// Définir le type des props pour le composant SectionLengthChart
+interface SectionLengthChartProps {
+  userId: number;
+}
+
+// Tooltip personnalisé
 const customTooltip = ({ active, payload }: TooltipProps<number, string>) => {
   if (active && payload && payload.length > 0) {
     const sessionLength = payload[0]?.value ?? 0;
@@ -41,17 +47,7 @@ const customTooltip = ({ active, payload }: TooltipProps<number, string>) => {
   return null;
 };
 
-const SectionLengthChart = () => {
-  // Récupérer l'URL actuelle
-  const url = window.location.href;
-
-  // Expression régulière pour trouver le paramètre 'userId' dans l'URL
-  const regex = /[?&]userId=(\d+)/;
-  const match = url.match(regex);
-
-  // Si un userId est trouvé, l'utiliser. Sinon, utiliser 12 par défaut.
-  const userId = match ? parseInt(match[1], 10) : 12;
-
+const SectionLengthChart: React.FC<SectionLengthChartProps> = ({ userId }) => {
   const { data = [], isLoading } = useQuery({
     queryKey: ["sessionData", userId],
     queryFn: fetchData,
@@ -64,7 +60,7 @@ const SectionLengthChart = () => {
   return (
     <div className="w-full h-full rounded-xl overflow-hidden bg-red-500">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} style={{ backgroundColor: "red" }}>
+        <LineChart data={data}>
           <CartesianGrid vertical={false} horizontal={false} />
           <YAxis hide={true} />
           <XAxis

@@ -11,7 +11,7 @@ import {
 import { fetchActivityData } from "../services/api";
 import { useQuery } from "@tanstack/react-query";
 
-const ActivityChart = () => {
+const ActivityChart = ({ userId: propUserId }: { userId?: number }) => {
   // Récupérer l'URL actuelle
   const url = window.location.href;
 
@@ -20,7 +20,7 @@ const ActivityChart = () => {
   const match = url.match(regex);
 
   // Si un userId est trouvé, l'utiliser. Sinon, utiliser 12 par défaut.
-  const userId = match ? parseInt(match[1], 10) : 12;
+  const userId = match ? parseInt(match[1], 10) : propUserId || 12;
 
   // Effectuer la requête avec le userId dynamique
   const activityQuery = useQuery({

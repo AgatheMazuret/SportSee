@@ -9,7 +9,7 @@ import {
 } from "recharts";
 import { fetchPerformanceData } from "../services/api";
 
-const PerformanceChart = () => {
+const PerformanceChart = ({ userId: propUserId }: { userId?: number }) => {
   // Récupérer l'URL actuelle
   const url = window.location.href;
 
@@ -18,11 +18,11 @@ const PerformanceChart = () => {
   const match = url.match(regex);
 
   // Si un userId est trouvé, l'utiliser. Sinon, utiliser 12 par défaut.
-  const userId = match ? parseInt(match[1], 10) : 12;
+  const userId = propUserId ?? (match ? parseInt(match[1], 10) : 12);
 
   const { data = [], isLoading } = useQuery({
     queryKey: ["performanceData", userId],
-    queryFn: () => fetchPerformanceData(12),
+    queryFn: () => fetchPerformanceData(userId),
   });
 
   if (isLoading) return <div>Chargement...</div>;
