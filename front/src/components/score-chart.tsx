@@ -3,12 +3,22 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { fetchUserScore } from "../services/api"; // Importation du service
 
 const ScoreChart = () => {
+  // Récupérer l'URL actuelle
+  const url = window.location.href;
+
+  // Expression régulière pour trouver le paramètre 'userId' dans l'URL
+  const regex = /[?&]userId=(\d+)/;
+  const match = url.match(regex);
+
+  // Si un userId est trouvé, l'utiliser. Sinon, utiliser 12 par défaut.
+  const userId = match ? parseInt(match[1], 10) : 12;
+
   const {
     data: score,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["userScore", 12], // ID utilisateur en paramètre
+    queryKey: ["userScore", userId], // ID utilisateur en paramètre
     queryFn: () => fetchUserScore(12),
   });
 

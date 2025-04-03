@@ -3,8 +3,18 @@ import { fetchNutritionData, NutritionDataType } from "../services/api"; // Impo
 import Card from "./card";
 
 const NutritionData = () => {
+  // Récupérer l'URL actuelle
+  const url = window.location.href;
+
+  // Expression régulière pour trouver le paramètre 'userId' dans l'URL
+  const regex = /[?&]userId=(\d+)/;
+  const match = url.match(regex);
+
+  // Si un userId est trouvé, l'utiliser. Sinon, utiliser 12 par défaut.
+  const userId = match ? parseInt(match[1], 10) : 12;
+
   const { data, error, isLoading } = useQuery<NutritionDataType, Error>({
-    queryKey: ["nutritionData", 12],
+    queryKey: ["nutritionData", userId],
     queryFn: () => fetchNutritionData(12),
   });
 

@@ -10,8 +10,18 @@ import {
 import { fetchPerformanceData } from "../services/api";
 
 const PerformanceChart = () => {
+  // Récupérer l'URL actuelle
+  const url = window.location.href;
+
+  // Expression régulière pour trouver le paramètre 'userId' dans l'URL
+  const regex = /[?&]userId=(\d+)/;
+  const match = url.match(regex);
+
+  // Si un userId est trouvé, l'utiliser. Sinon, utiliser 12 par défaut.
+  const userId = match ? parseInt(match[1], 10) : 12;
+
   const { data = [], isLoading } = useQuery({
-    queryKey: ["performanceData", 12], // Remplace 12 par l'ID utilisateur dynamique si nécessaire
+    queryKey: ["performanceData", userId],
     queryFn: () => fetchPerformanceData(12),
   });
 

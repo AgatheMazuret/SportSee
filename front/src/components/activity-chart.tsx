@@ -12,10 +12,21 @@ import { fetchActivityData } from "../services/api";
 import { useQuery } from "@tanstack/react-query";
 
 const ActivityChart = () => {
+  // Récupérer l'URL actuelle
+  const url = window.location.href;
+
+  // Expression régulière pour trouver le paramètre 'userId' dans l'URL
+  const regex = /[?&]userId=(\d+)/;
+  const match = url.match(regex);
+
+  // Si un userId est trouvé, l'utiliser. Sinon, utiliser 12 par défaut.
+  const userId = match ? parseInt(match[1], 10) : 12;
+
+  // Effectuer la requête avec le userId dynamique
   const activityQuery = useQuery({
-    queryKey: ["activity", 12], // ID de l'utilisateur
-    queryFn: () => fetchActivityData(12), // Appel à la fonction pour récupérer les données
-    staleTime: 1000 * 60 * 5, // Données considérées comme fraîches pendant 5 minutes
+    queryKey: ["activity", userId], // Utilisation du userId dynamique
+    queryFn: () => fetchActivityData(userId), // Appel à l'API avec le userId
+    staleTime: 1000 * 60 * 5, // Données fraîches pendant 5 minutes
   });
 
   if (activityQuery.isLoading) {
