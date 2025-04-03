@@ -1,5 +1,3 @@
-// src/ActivityChart.tsx
-
 import {
   BarChart,
   Bar,
