@@ -19,7 +19,7 @@ const ScoreChart = ({ userId: propUserId }: { userId?: number }) => {
     error,
   } = useQuery({
     queryKey: ["userScore", userId], // ID utilisateur en paramètre
-    queryFn: () => fetchUserScore(12),
+    queryFn: () => fetchUserScore(userId), // Appel de la fonction pour récupérer le score
   });
 
   if (isLoading) return <div>Chargement...</div>;
