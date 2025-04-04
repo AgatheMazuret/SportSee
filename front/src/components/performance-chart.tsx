@@ -13,20 +13,24 @@ const PerformanceChart = ({ userId: propUserId }: { userId?: number }) => {
   // Récupérer l'URL actuelle
   const url = window.location.href;
 
-  // Expression régulière pour trouver le paramètre 'userId' dans l'URL
+  // Expression régulière pour extraire le userId de l'URL
   const regex = /[?&]userId=(\d+)/;
   const match = url.match(regex);
 
-  // Si un userId est trouvé, l'utiliser. Sinon, utiliser 12 par défaut.
+  // Si userId est passé en prop, l'utiliser, sinon chercher dans l'URL ou utiliser 12 par défaut
   const userId = propUserId ?? (match ? parseInt(match[1], 10) : 12);
 
-  const { data = [], isLoading } = useQuery({
-    queryKey: ["performanceData", userId],
+  const {
+    data = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["performanceData", userId], // Utiliser l'userId pour la requête
     queryFn: () => fetchPerformanceData(userId),
   });
 
   if (isLoading) return <div>Chargement...</div>;
-  if (!data.length) return <div>Aucune donnée disponible</div>;
+  if (error || !data.length) return <div>Aucune donnée disponible</div>;
 
   return (
     <div className="w-full h-full rounded-xl overflow-hidden bg-[#282D30]">

@@ -11,21 +11,26 @@ import {
 import { fetchActivityData } from "../services/api";
 import { useQuery } from "@tanstack/react-query";
 
-const ActivityChart = ({ userId: propUserId }: { userId?: number }) => {
-  // Récupérer l'URL actuelle
-  const url = window.location.href;
+// Type definition for the props
+interface ActivityChartProps {
+  userId?: number; // Optional userId prop
+}
 
-  // Expression régulière pour trouver le paramètre 'userId' dans l'URL
-  const regex = /[?&]userId=(\d+)/;
-  const match = url.match(regex);
+const ActivityChart = ({ userId: propUserId }: ActivityChartProps) => {
+  // Fonction pour récupérer l'userId depuis l'URL
+  const getUserIdFromUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search); // Utilisation de window.location.search pour accéder aux paramètres d'URL
+    const userId = urlParams.get("userId");
+    return userId ? parseInt(userId, 10) : 12; // Valeur par défaut si aucun userId trouvé
+  };
 
-  // Si un userId est trouvé, l'utiliser. Sinon, utiliser 12 par défaut.
-  const userId = match ? parseInt(match[1], 10) : propUserId || 12;
+  // Récupérer l'userId de la prop ou de l'URL
+  const userId = propUserId ?? getUserIdFromUrl(); // Priorise la prop userId, sinon prend celui de l'URL
 
   // Effectuer la requête avec le userId dynamique
   const activityQuery = useQuery({
-    queryKey: ["activity", userId], // Utilisation du userId dynamique
-    queryFn: () => fetchActivityData(userId), // Appel à l'API avec le userId
+    queryKey: ["activity", userId],
+    queryFn: () => fetchActivityData(userId),
     staleTime: 1000 * 60 * 5, // Données fraîches pendant 5 minutes
   });
 
@@ -33,7 +38,7 @@ const ActivityChart = ({ userId: propUserId }: { userId?: number }) => {
     return <div>Chargement des données...</div>;
   }
 
-  // Fonction pour formatter le jour à partir de la date complète (au format 'YYYY-MM-DD')
+  // Fonction pour formater le jour à partir de la date complète (au format 'YYYY-MM-DD')
   const formatDay = (date: string) => {
     const day = new Date(date).getDate(); // Récupérer uniquement le jour du mois
     return day.toString();

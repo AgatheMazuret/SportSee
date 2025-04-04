@@ -26,8 +26,8 @@ const ScoreChart = ({ userId: propUserId }: { userId?: number }) => {
   if (error || score === null) return <div>Aucune donnée disponible</div>;
 
   const data = [
-    { name: "Score", value: score * 100, color: "#FF0101" },
-    { name: "Reste", value: 100 - score * 100, color: "#FBFBFB" },
+    { name: "Score", value: (score ?? 0) * 100, color: "#FF0101" },
+    { name: "Reste", value: 100 - (score ?? 0) * 100, color: "#FBFBFB" },
   ];
 
   return (
@@ -56,7 +56,7 @@ const ScoreChart = ({ userId: propUserId }: { userId?: number }) => {
       </ResponsiveContainer>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-lg font-bold text-gray-800">
         <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-          {score * 100}%
+          {(score ?? 0) * 100}%
         </div>
         <div style={{ fontSize: "12px", color: "#74798C" }}>
           de votre objectif

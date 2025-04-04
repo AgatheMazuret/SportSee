@@ -1,41 +1,39 @@
-type ActivityData = {
+const API_BASE_URL = "http://localhost:3000/user";
+
+/** Structure des données d'activité */
+export type ActivityData = {
   day: string;
   kilogram: number;
   calories: number;
 };
 
-type FormattedActivityData = {
+export type FormattedActivityData = {
   day: string;
   kilogram: number;
   calories: number;
 };
 
-// Fonction pour récupérer les données d'activité depuis l'API
+/** Récupérer les données d'activité */
 export const fetchActivityData = async (
   userId: number
 ): Promise<FormattedActivityData[]> => {
   try {
-    const response = await fetch(
-      `http://localhost:3000/user/${userId}/activity`
-    );
-    const responseData: { data: { sessions: ActivityData[] } } =
-      await response.json();
+    const response = await fetch(`${API_BASE_URL}/${userId}/activity`);
+    if (!response.ok) throw new Error("Erreur de chargement des activités");
 
-    // Transformation des données pour correspondre au format attendu
-    const formattedData: FormattedActivityData[] =
-      responseData.data.sessions.map((item: ActivityData) => ({
-        day: item.day,
-        kilogram: item.kilogram,
-        calories: item.calories,
-      }));
-
-    return formattedData;
+    const responseData = await response.json();
+    return responseData.data.sessions.map((item: ActivityData) => ({
+      day: item.day,
+      kilogram: item.kilogram,
+      calories: item.calories,
+    }));
   } catch (error) {
-    console.error("Erreur lors de la récupération des données:", error);
-    throw error; // Relance l'erreur pour la gérer dans le composant
+    console.error("❌ Erreur lors de la récupération des activités :", error);
+    throw error;
   }
 };
 
+/** Structure des données nutritionnelles */
 export interface NutritionDataType {
   calorieCount: number;
   proteinCount: number;
@@ -43,65 +41,74 @@ export interface NutritionDataType {
   lipidCount: number;
 }
 
+/** Récupérer les données nutritionnelles */
 export const fetchNutritionData = async (
   userId: number
 ): Promise<NutritionDataType> => {
   try {
-    const response = await fetch(`http://localhost:3000/user/${userId}/`);
-    if (!response.ok) {
-      throw new Error("La réponse du réseau n'est pas correcte");
-    }
+    const response = await fetch(`${API_BASE_URL}/${userId}`);
+    if (!response.ok) throw new Error("Impossible de récupérer les données");
+
     const result = await response.json();
-    if (result.data && result.data.keyData) {
-      return result.data.keyData;
-    } else {
-      throw new Error("Pas de 'keyData' dans la réponse");
-    }
+    if (!result.data?.keyData)
+      throw new Error("Données nutritionnelles manquantes");
+
+    return result.data.keyData;
   } catch (error) {
-    console.error("❌ Erreur de récupération:", error);
+    console.error("❌ Erreur récupération nutrition :", error);
     throw error;
   }
 };
 
-export const fetchPerformanceData = async (userId: number) => {
-  try {
-    const response = await fetch(
-      `http://localhost:3000/user/${userId}/performance`
-    );
-    const responseData = await response.json();
+/** Structure des performances */
+export type PerformanceData = {
+  subject: string;
+  value: number;
+};
 
-    if (!responseData.data) throw new Error("Données manquantes");
+/** Récupérer les performances */
+export const fetchPerformanceData = async (
+  userId: number
+): Promise<PerformanceData[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${userId}/performance`);
+    if (!response.ok)
+      throw new Error("Erreur de récupération des performances");
+
+    const responseData = await response.json();
+    if (!responseData.data?.data || !responseData.data?.kind)
+      throw new Error("Format des données incorrect");
 
     const { data, kind } = responseData.data;
-    if (!data || !kind) throw new Error("Format des données incorrect");
 
-    // Formater les données avec leur libellé
     return data.map((item: { kind: number; value: number }) => ({
-      subject: kind[item.kind],
+      subject: kind[item.kind] || "Inconnu",
       value: item.value,
     }));
   } catch (error) {
-    console.error("Erreur de chargement :", error);
-    return []; // Retourne un tableau vide en cas d'erreur
+    console.error("❌ Erreur récupération performance :", error);
+    return [];
   }
 };
 
-export const fetchUserScore = async (userId: number) => {
+/** Récupérer le score utilisateur */
+export const fetchUserScore = async (userId: number): Promise<number> => {
   try {
-    const response = await fetch(`http://localhost:3000/user/${userId}`);
+    const response = await fetch(`${API_BASE_URL}/${userId}`);
+    if (!response.ok) throw new Error("Erreur de récupération du score");
+
     const responseData = await response.json();
+    const score = responseData.data?.todayScore ?? responseData.data?.score;
+    if (score === undefined) throw new Error("Données score manquantes");
 
-    if (!responseData.data || responseData.data.todayScore === undefined) {
-      throw new Error("Données manquantes");
-    }
-
-    return responseData.data.todayScore;
+    return score;
   } catch (error) {
-    console.error("Erreur de chargement :", error);
-    throw error; // On relance l'erreur pour que le composant puisse la gérer
+    console.error("❌ Erreur récupération score :", error);
+    throw error;
   }
 };
 
+/** Structure des sessions moyennes */
 export type Length = {
   day: number;
   sessionLength: number;
@@ -112,18 +119,21 @@ export type FormattedLengthData = {
   sessionLength: number;
 };
 
-export const fetchSessionData = async (userId: number) => {
+/** Récupérer la durée moyenne des sessions */
+export const fetchSessionData = async (
+  userId: number
+): Promise<FormattedLengthData[]> => {
   try {
-    const response = await fetch(
-      `http://localhost:3000/user/${userId}/average-sessions`
-    );
+    const response = await fetch(`${API_BASE_URL}/${userId}/average-sessions`);
+    if (!response.ok) throw new Error("Erreur récupération sessions");
+
     const responseData = await response.json();
     return responseData.data.sessions.map((item: Length) => ({
       day: item.day,
       sessionLength: item.sessionLength,
     }));
   } catch (error) {
-    console.error("Erreur lors de la récupération des données:", error);
+    console.error("❌ Erreur récupération durée session :", error);
     return [];
   }
 };

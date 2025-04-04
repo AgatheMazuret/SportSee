@@ -1,21 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchNutritionData, NutritionDataType } from "../services/api"; // Importation du service
 import Card from "./card";
+import { useState, useEffect } from "react";
 
 const NutritionData = ({ userId: propUserId }: { userId?: number }) => {
-  // Récupérer l'URL actuelle
-  const url = window.location.href;
+  const [userId, setUserId] = useState<number>(12); // ID par défaut
 
-  // Expression régulière pour trouver le paramètre 'userId' dans l'URL
-  const regex = /[?&]userId=(\d+)/;
-  const match = url.match(regex);
+  useEffect(() => {
+    // Récupération de l'userId depuis l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const newUserId =
+      propUserId ?? parseInt(urlParams.get("userId") || "12", 10);
 
-  // Si un userId est trouvé, l'utiliser. Sinon, utiliser 12 par défaut.
-  const userId = propUserId ?? (match ? parseInt(match[1], 10) : 12);
+    setUserId(newUserId);
+  }, [propUserId]);
 
+  // Récupérer les données via la query de React Query
   const { data, error, isLoading } = useQuery<NutritionDataType, Error>({
     queryKey: ["nutritionData", userId],
-    queryFn: () => fetchNutritionData(12),
+    queryFn: () => fetchNutritionData(userId), // Utilisation du userId dynamique
   });
 
   if (isLoading)
@@ -24,7 +27,7 @@ const NutritionData = ({ userId: propUserId }: { userId?: number }) => {
   if (!data) return <p className="text-center">Aucune donnée disponible</p>;
 
   return (
-    <div className="flex gap-4 flex-col items-center">
+    <div className="flex flex-col items-center gap-4">
       <Card
         icon="/icon-calories.svg"
         title="Calories"

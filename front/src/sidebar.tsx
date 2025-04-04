@@ -9,7 +9,7 @@ const Sidebar = () => {
   return (
     <div className="bg-black w-30 shrink-0 flex flex-col items-center">
       {/* Conteneur des icônes */}
-      <div className="flex flex-col items-center gap-4 lg:gap-7 flex-1 justify-center">
+      <div className="flex flex-col items-center gap-4 lg:gap-7 flex-1 justify-center cursor-pointer">
         {icons.map((icon) => (
           <div key={icon.alt} className={icon.alt}>
             <img src={icon.src} alt={icon.alt} />

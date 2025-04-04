@@ -7,7 +7,7 @@ import SpentEnergyChart from "../components/performance-chart";
 import ScoreChart from "../components/score-chart";
 import NutritionData from "../components/nutrition-data";
 
-const App = () => {
+const App = ({ propUserId }: { propUserId?: number }) => {
   // Récupérer l'URL actuelle
   const url = window.location.href;
 
@@ -15,8 +15,10 @@ const App = () => {
   const regex = /[?&]userId=(\d+)/;
   const match = url.match(regex);
 
-  // Si un userId est trouvé, l'utiliser. Sinon, utiliser 18 par défaut.
-  const userId = match ? parseInt(match[1], 10) : 12;
+  const userId = propUserId ?? (match ? parseInt(match[1], 10) : 12); // Valeur par défaut : 12
+  if (userId !== 12 && userId !== 18) {
+    // Tu peux gérer un cas où userId n'est ni 12 ni 18 si tu as besoin
+  }
 
   return (
     <>

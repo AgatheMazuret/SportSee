@@ -1,4 +1,5 @@
-import { fetchSessionData } from "../services/api";
+import { useQuery } from "@tanstack/react-query";
+import { fetchSessionData } from "../services/api"; // Assure-toi d'avoir bien ce service d'API
 import {
   LineChart,
   Line,
@@ -10,8 +11,8 @@ import {
   ResponsiveContainer,
   TooltipProps,
 } from "recharts";
-import { useQuery } from "@tanstack/react-query";
 
+// Abbréviations des jours
 const dayAbbreviations = ["L", "M", "M", "J", "V", "S", "D"];
 
 // Tooltip personnalisé
@@ -46,26 +47,31 @@ const SectionLengthChart = ({ userId }: { userId?: number }) => {
     return match ? parseInt(match[1], 10) : 12; // Valeur par défaut : 12
   };
 
-  const finalUserId = userId ?? getUserIdFromUrl(); // Priorité à la prop
-  // Vérifie si `finalUserId` est bien défini
+  // Si userId n'est pas fourni en prop, on prend celui de l'URL
+  const finalUserId = userId ?? getUserIdFromUrl();
 
-  const { data = [], isLoading } = useQuery({
-    queryKey: ["sessionData", finalUserId],
-    queryFn: async () => {
-      return fetchSessionData(finalUserId);
-    },
+  // Requête pour récupérer les données de session pour l'`userId`
+  const {
+    data = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["sessionData", finalUserId], // On passe l'ID de l'utilisateur en tant que clé de la requête
+    queryFn: () => fetchSessionData(finalUserId), // On appelle la fonction pour récupérer les données
   });
 
+  // Affichage pendant le chargement des données
   if (isLoading) {
     return <div>Chargement des données...</div>;
   }
 
-  if (data.length === 0) {
-    return <div>Aucune donnée disponible</div>;
+  // Si erreur ou pas de données, afficher un message d'erreur
+  if (error || data.length === 0) {
+    return <div>Aucune donnée disponible pour cet utilisateur.</div>;
   }
 
   return (
-    <div className="w-full h-full rounded-xl overflow-hidden bg-red-500">
+    <div className="w-full h-full rounded-xl overflow-hidden bg-red-600">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
           <CartesianGrid vertical={false} horizontal={false} />
