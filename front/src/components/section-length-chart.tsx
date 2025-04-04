@@ -14,13 +14,9 @@ import { useQuery } from "@tanstack/react-query";
 
 const dayAbbreviations = ["L", "M", "M", "J", "V", "S", "D"];
 
-const fetchData = async (): Promise<FormattedLengthData[]> => {
-  return await fetchSessionData();
-};
-
 // Définir le type des props pour le composant SectionLengthChart
 interface SectionLengthChartProps {
-  userId: number;
+  userId?: number; // `userId` est optionnel pour gérer l'URL dynamiquement
 }
 
 // Tooltip personnalisé
@@ -48,9 +44,17 @@ const customTooltip = ({ active, payload }: TooltipProps<number, string>) => {
 };
 
 const SectionLengthChart: React.FC<SectionLengthChartProps> = ({ userId }) => {
+  // Si userId n'est pas fourni en prop, on le récupère depuis l'URL
+  if (!userId) {
+    const url = window.location.href;
+    const regex = /[?&]userId=(\d+)/;
+    const match = url.match(regex);
+    userId = match ? parseInt(match[1], 10) : 12; // Valeur par défaut : 12
+  }
+
   const { data = [], isLoading } = useQuery({
     queryKey: ["sessionData", userId],
-    queryFn: fetchData,
+    queryFn: () => fetchSessionData(userId), // Passer le bon userId à l'API
   });
 
   if (isLoading) {

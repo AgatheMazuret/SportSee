@@ -16,7 +16,7 @@ const App = () => {
   const match = url.match(regex);
 
   // Si un userId est trouvé, l'utiliser. Sinon, utiliser 18 par défaut.
-  const userId = match ? parseInt(match[1], 10) : 18;
+  const userId = match ? parseInt(match[1], 10) : 12;
 
   return (
     <>
