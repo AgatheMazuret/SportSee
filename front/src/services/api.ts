@@ -114,9 +114,10 @@ export type FormattedLengthData = {
 
 export const fetchSessionData = async (userId: number) => {
   try {
-    const response = await fetch(`http://localhost:3000/user/${userId}`);
+    const response = await fetch(
+      `http://localhost:3000/user/${userId}/average-sessions`
+    );
     const responseData = await response.json();
-
     return responseData.data.sessions.map((item: Length) => ({
       day: item.day,
       sessionLength: item.sessionLength,

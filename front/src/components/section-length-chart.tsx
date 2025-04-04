@@ -47,14 +47,21 @@ const SectionLengthChart = ({ userId }: { userId?: number }) => {
   };
 
   const finalUserId = userId ?? getUserIdFromUrl(); // Priorité à la prop
+  // Vérifie si `finalUserId` est bien défini
 
   const { data = [], isLoading } = useQuery({
     queryKey: ["sessionData", finalUserId],
-    queryFn: () => fetchSessionData(finalUserId),
+    queryFn: async () => {
+      return fetchSessionData(finalUserId);
+    },
   });
 
   if (isLoading) {
     return <div>Chargement des données...</div>;
+  }
+
+  if (data.length === 0) {
+    return <div>Aucune donnée disponible</div>;
   }
 
   return (
