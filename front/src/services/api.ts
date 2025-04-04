@@ -112,11 +112,9 @@ export type FormattedLengthData = {
   sessionLength: number;
 };
 
-export const fetchSessionData = async (): Promise<FormattedLengthData[]> => {
+export const fetchSessionData = async (userId: number) => {
   try {
-    const response = await fetch(
-      "http://localhost:3000/user/12/average-sessions"
-    );
+    const response = await fetch(`http://localhost:3000/user/${userId}`);
     const responseData = await response.json();
 
     return responseData.data.sessions.map((item: Length) => ({
