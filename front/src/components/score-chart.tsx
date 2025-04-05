@@ -3,31 +3,31 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { fetchUserScore } from "../services/api"; // Importation du service
 
 const ScoreChart = ({ userId: propUserId }: { userId?: number }) => {
-  // Récupérer l'URL actuelle
   const url = window.location.href;
 
-  // Expression régulière pour trouver le paramètre 'userId' dans l'URL
+  // Expression régulière pour extraire le userId de l'URL si disponible
   const regex = /[?&]userId=(\d+)/;
   const match = url.match(regex);
 
-  // Si un userId est trouvé, l'utiliser. Sinon, utiliser 12 par défaut.
+  // Déterminer l'userId à utiliser : priorité à la prop, sinon prendre celui de l'URL ou 12 par défaut
   const userId = propUserId ?? (match ? parseInt(match[1], 10) : 12);
 
+  // Effectuer la requête pour récupérer le score de l'utilisateur
   const {
-    data: score,
+    data: score, // Score de l'utilisateur
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["userScore", userId], // ID utilisateur en paramètre
-    queryFn: () => fetchUserScore(userId), // Appel de la fonction pour récupérer le score
+    queryKey: ["userScore", userId], // Clé de la requête pour la mise en cache
+    queryFn: () => fetchUserScore(userId), // Fonction pour récupérer le score de l'utilisateur
   });
 
   if (isLoading) return <div>Chargement...</div>;
   if (error || score === null) return <div>Aucune donnée disponible</div>;
 
   const data = [
-    { name: "Score", value: (score ?? 0) * 100, color: "#FF0101" },
-    { name: "Reste", value: 100 - (score ?? 0) * 100, color: "#FBFBFB" },
+    { name: "Score", value: (score ?? 0) * 100, color: "#FF0101" }, // Données du score
+    { name: "Reste", value: 100 - (score ?? 0) * 100, color: "#FBFBFB" }, // Données du reste
   ];
 
   return (
@@ -36,27 +36,30 @@ const ScoreChart = ({ userId: propUserId }: { userId?: number }) => {
         <PieChart>
           <Pie
             data={data}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            innerRadius={80}
-            outerRadius={90}
-            startAngle={90}
-            endAngle={90 + 360}
-            fill="#FFF"
-            stroke="none"
-            cornerRadius={10}
+            dataKey="value" // Utilisation de la clé 'value' pour les valeurs
+            nameKey="name" // Utilisation de la clé 'name' pour les noms
+            cx="50%" // Centre du graphique sur l'axe horizontal
+            cy="50%" // Centre du graphique sur l'axe vertical
+            innerRadius={80} // Rayon intérieur du graphique circulaire
+            outerRadius={90} // Rayon extérieur du graphique circulaire
+            startAngle={90} // Angle de départ du graphique
+            endAngle={90 + 360} // Angle de fin du graphique
+            fill="#FFF" // Couleur de remplissage du graphique
+            stroke="none" // Pas de bordure pour les segments du graphique
+            cornerRadius={10} // Bords arrondis des segments
           >
+            {/* Générer des cellules pour chaque segment du graphique avec la couleur appropriée */}
             {data.map((cell) => (
               <Cell key={`cell-${cell.name}`} fill={cell.color} />
             ))}
           </Pie>
         </PieChart>
       </ResponsiveContainer>
+      {/* Affichage du score au centre du graphique */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-lg font-bold text-gray-800">
         <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-          {(score ?? 0) * 100}%
+          {(score ?? 0) * 100}%{" "}
+          {/* Afficher le score sous forme de pourcentage */}
         </div>
         <div style={{ fontSize: "12px", color: "#74798C" }}>
           de votre objectif

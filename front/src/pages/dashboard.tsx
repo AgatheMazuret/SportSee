@@ -8,37 +8,41 @@ import ScoreChart from "../components/score-chart";
 import NutritionData from "../components/nutrition-data";
 
 const App = ({ propUserId }: { propUserId?: number }) => {
-  // Récupérer l'URL actuelle
   const url = window.location.href;
 
-  // Expression régulière pour trouver le paramètre 'userId' dans l'URL
+  // Chercher le paramètre 'userId' dans l'URL avec une expression régulière
   const regex = /[?&]userId=(\d+)/;
   const match = url.match(regex);
 
-  const userId = propUserId ?? (match ? parseInt(match[1], 10) : 12); // Valeur par défaut : 12
+  // Définir userId, avec une valeur par défaut de 12 si non précisé dans les props ou l'URL
+  const userId = propUserId ?? (match ? parseInt(match[1], 10) : 12);
+
   if (userId !== 12 && userId !== 18) {
-    // Tu peux gérer un cas où userId n'est ni 12 ni 18 si tu as besoin
+    alert("userId invalide.");
   }
 
   return (
     <>
       <Header />
-      <div className="flex ">
+      <div className="flex">
         <Sidebar />
         <div className="flex-1 p-[68px_70px_70px_65px]">
           <div className="mb-20">
-            {/* Passer le userId au composant Hello */}
+            {/* Passer userId comme prop au composant Hello */}
             <Hello userId={userId} />
           </div>
           <div className="flex w-full gap-8">
             <div className="flex-1 flex flex-col gap-8">
+              {/* Afficher le graphique des activités */}
               <ActivityChart userId={userId} />
               <div className="flex gap-8 w-full h-full md:h-[205px]">
+                {/* Afficher les graphiques de longueur de section, énergie dépensée, et score */}
                 <SectionLengthChart userId={userId} />
                 <SpentEnergyChart userId={userId} />
                 <ScoreChart userId={userId} />
               </div>
             </div>
+            {/* Afficher les données nutritionnelles */}
             <NutritionData userId={userId} />
           </div>
         </div>

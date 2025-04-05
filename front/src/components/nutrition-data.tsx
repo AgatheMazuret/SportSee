@@ -1,24 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchNutritionData, NutritionDataType } from "../services/api"; // Importation du service
+import { fetchNutritionData, NutritionDataType } from "../services/api";
 import Card from "./card";
 import { useState, useEffect } from "react";
 
 const NutritionData = ({ userId: propUserId }: { userId?: number }) => {
-  const [userId, setUserId] = useState<number>(12); // ID par défaut
+  // État local pour stocker l'userId, avec une valeur par défaut de 12
+  const [userId, setUserId] = useState<number>(12);
 
   useEffect(() => {
-    // Récupération de l'userId depuis l'URL
+    // Récupérer l'userId depuis l'URL ou depuis la prop si disponible
     const urlParams = new URLSearchParams(window.location.search);
     const newUserId =
       propUserId ?? parseInt(urlParams.get("userId") || "12", 10);
 
-    setUserId(newUserId);
+    setUserId(newUserId); // Mettre à jour l'état avec l'userId trouvé
   }, [propUserId]);
 
-  // Récupérer les données via la query de React Query
   const { data, error, isLoading } = useQuery<NutritionDataType, Error>({
-    queryKey: ["nutritionData", userId],
-    queryFn: () => fetchNutritionData(userId), // Utilisation du userId dynamique
+    queryKey: ["nutritionData", userId], // Clé de la requête (permet la mise en cache)
+    queryFn: () => fetchNutritionData(userId), // Fonction qui récupère les données de nutrition
   });
 
   if (isLoading)
@@ -26,6 +26,7 @@ const NutritionData = ({ userId: propUserId }: { userId?: number }) => {
   if (error) return <p className="text-center text-red-500">{error.message}</p>;
   if (!data) return <p className="text-center">Aucune donnée disponible</p>;
 
+  // Affichage des données nutritionnelles sous forme de cartes
   return (
     <div className="flex flex-col items-center gap-4">
       <Card
