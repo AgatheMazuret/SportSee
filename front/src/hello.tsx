@@ -4,7 +4,7 @@ interface HelloProps {
   userId: number;
 }
 
-const Hello: React.FC<HelloProps> = ({ userId }) => {
+const Hello = ({ userId }: HelloProps) => {
   const [firstName, setFirstName] = useState<string | null>(null);
 
   useEffect(() => {
@@ -31,9 +31,9 @@ const Hello: React.FC<HelloProps> = ({ userId }) => {
     <div className="flex flex-col items-start justify-center">
       <p className="text-5xl">
         Bonjour{" "}
-        <a className="text-red-500" href={`/user/${userId}`}>
+        <span className="text-red-500">
           {firstName === null ? "Chargement..." : firstName}
-        </a>
+        </span>
       </p>
       {firstName && firstName !== "Erreur" && (
         <p className="text-lg mt-[41px]">
