@@ -17,6 +17,28 @@ interface ActivityChartProps {
   userId?: number; // userId prop optionnel
 }
 
+// Composant personnalisé pour dessiner des cercles dans la légende
+const CustomLegend = (props: any) => {
+  const { payload } = props; // Récupère les données de la légende
+  return (
+    <ul className="flex space-x-8">
+      {payload.map((entry: any) => (
+        <li key={entry.dataKey} className="flex items-center">
+          <div
+            className="w-4 h-4 rounded-full"
+            style={{ backgroundColor: entry.color }} // Applique la couleur de l'élément
+          ></div>
+          <span className="ml-2">
+            {entry.dataKey === "kilogram"
+              ? "Poids (kg)"
+              : "Calories brûlées (kCal)"}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
 const ActivityChart = ({ userId: propUserId }: ActivityChartProps) => {
   // Fonction pour récupérer l'userId depuis l'URL
   const getUserIdFromUrl = () => {
@@ -53,17 +75,36 @@ const ActivityChart = ({ userId: propUserId }: ActivityChartProps) => {
   };
 
   return (
-    <ResponsiveContainer width="100%" height={320}>
-      <BarChart data={data} style={{ backgroundColor: "#FBFBFB" }}>
-        <CartesianGrid vertical={false} strokeDasharray="5 5" />
-        <XAxis dataKey="day" tickFormatter={formatDay} />
-        <YAxis orientation="right" />
-        <Tooltip />
-        <Legend layout="horizontal" verticalAlign="top" align="right" />
-        <Bar dataKey="kilogram" fill="#282D30" barSize={7} radius={3} />
-        <Bar dataKey="calories" fill="#E60000" barSize={7} radius={3} />
-      </BarChart>
-    </ResponsiveContainer>
+    <div className="p-4 bg-white rounded-xl shadow-lg">
+      {/* Titre du graphique */}
+      <h3 className="text-l font-semibold mb-4">Activité quotidienne</h3>
+
+      <ResponsiveContainer width="100%" height={320}>
+        <BarChart data={data}>
+          <CartesianGrid vertical={false} strokeDasharray="5 5" />
+          <XAxis dataKey="day" tickFormatter={formatDay} />
+          <YAxis orientation="right" />
+          <Tooltip />
+          {/* Légende personnalisée en haut à droite */}
+          <Legend
+            layout="horizontal"
+            verticalAlign="top"
+            align="right"
+            content={<CustomLegend />}
+          />
+          <Bar
+            dataKey="kilogram"
+            fill="#282D30"
+            barSize={14} // Taille des barres
+          />
+          <Bar
+            dataKey="calories"
+            fill="#E60000"
+            barSize={14} // Taille des barres
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 

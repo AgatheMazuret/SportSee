@@ -40,6 +40,11 @@ const ScoreChart = ({ userId: propUserId }: { userId?: number }) => {
 
   return (
     <div className="w-full h-full rounded-xl overflow-hidden bg-gray-100 relative">
+      {/* Titre "Score" en haut à gauche */}
+      <div className="absolute top-4 left-4 text-l font-semibold text-gray-800">
+        Score
+      </div>
+
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -63,6 +68,7 @@ const ScoreChart = ({ userId: propUserId }: { userId?: number }) => {
           </Pie>
         </PieChart>
       </ResponsiveContainer>
+
       {/* Affichage du score au centre du graphique */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-lg font-bold text-gray-800">
         <div style={{ fontSize: "24px", fontWeight: "bold" }}>
