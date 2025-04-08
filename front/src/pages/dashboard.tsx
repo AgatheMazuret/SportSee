@@ -26,7 +26,7 @@ const App = ({ propUserId }: { propUserId?: number }) => {
       <Header />
       <div className="flex h-screen">
         <Sidebar />
-        <div className="flex-1 p-[68px_70px_70px_65px]">
+        <div className="flex-1 p-[68px_70px_70px_65px] md:p-[30px_30px_30px_30px]">
           <div className="mb-20">
             {/* Passer userId comme prop au composant Hello */}
             <Hello userId={userId} />
