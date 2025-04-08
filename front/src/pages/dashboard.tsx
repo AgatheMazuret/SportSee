@@ -24,7 +24,7 @@ const App = ({ propUserId }: { propUserId?: number }) => {
   return (
     <>
       <Header />
-      <div className="flex">
+      <div className="flex h-screen">
         <Sidebar />
         <div className="flex-1 p-[68px_70px_70px_65px]">
           <div className="mb-20">

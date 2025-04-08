@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
   TooltipProps,
 } from "recharts";
+import ErrorMessage from "./error-message";
 
 const dayAbbreviations = ["L", "M", "M", "J", "V", "S", "D"];
 
@@ -59,13 +60,15 @@ const SectionLengthChart = ({ userId }: { userId?: number }) => {
     queryFn: () => fetchSessionData(finalUserId), // Fonction pour récupérer les données
   });
 
-  if (isLoading) {
-    return <div>Chargement des données...</div>;
-  }
-
-  if (error || data.length === 0) {
-    return <div>Aucune donnée disponible pour cet utilisateur.</div>;
-  }
+  // Gestion du chargement et des erreurs
+  if (isLoading) return <div>Chargement...</div>;
+  if (error) return <ErrorMessage />;
+  if (!data)
+    return (
+      <div className="text-center">
+        Aucune donnée disponible pour cet utilisateur.
+      </div>
+    );
 
   return (
     <div className="w-full h-full rounded-xl overflow-hidden bg-red-600">

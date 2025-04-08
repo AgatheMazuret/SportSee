@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { fetchUserScore } from "../services/api"; // Importation du service
+import { fetchUserScore } from "../services/api";
+import ErrorMessage from "./error-message";
 
 const ScoreChart = ({ userId: propUserId }: { userId?: number }) => {
   const url = window.location.href;
@@ -14,7 +15,7 @@ const ScoreChart = ({ userId: propUserId }: { userId?: number }) => {
 
   // Effectuer la requête pour récupérer le score de l'utilisateur
   const {
-    data: score, // Score de l'utilisateur
+    data: score,
     isLoading,
     error,
   } = useQuery({
@@ -22,12 +23,19 @@ const ScoreChart = ({ userId: propUserId }: { userId?: number }) => {
     queryFn: () => fetchUserScore(userId), // Fonction pour récupérer le score de l'utilisateur
   });
 
+  // Gestion du chargement et des erreurs
   if (isLoading) return <div>Chargement...</div>;
-  if (error || score === null) return <div>Aucune donnée disponible</div>;
+  if (error) return <ErrorMessage />;
+  if (score === null)
+    return (
+      <div className="text-center">
+        Aucune donnée disponible pour cet utilisateur.
+      </div>
+    );
 
   const data = [
     { name: "Score", value: (score ?? 0) * 100, color: "#FF0101" }, // Données du score
-    { name: "Reste", value: 100 - (score ?? 0) * 100, color: "#FBFBFB" }, // Données du reste
+    { name: "Reste", value: 100 - (score ?? 0) * 100, color: "#FBFBFB" }, // le pourcentage à atteindre
   ];
 
   return (

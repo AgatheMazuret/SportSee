@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { fetchPerformanceData } from "../services/api";
+import ErrorMessage from "./error-message";
 
 const PerformanceChart = ({ userId: propUserId }: { userId?: number }) => {
   const url = window.location.href;
@@ -29,8 +30,15 @@ const PerformanceChart = ({ userId: propUserId }: { userId?: number }) => {
     queryFn: () => fetchPerformanceData(userId), // Fonction pour récupérer les données de performance
   });
 
+  // Gestion du chargement et des erreurs
   if (isLoading) return <div>Chargement...</div>;
-  if (error || !data.length) return <div>Aucune donnée disponible</div>;
+  if (error) return <ErrorMessage />;
+  if (!data)
+    return (
+      <div className="text-center">
+        Aucune donnée disponible pour cet utilisateur.
+      </div>
+    );
 
   // Affichage du graphique radar avec les données de performance
   return (

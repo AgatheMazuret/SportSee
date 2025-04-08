@@ -7,7 +7,7 @@ const icons = [
 
 const Sidebar = () => {
   return (
-    <div className="bg-black w-30 shrink-0 flex flex-col items-center">
+    <div className="bg-black w-30 shrink-0 flex flex-col justify-between items-center">
       {/* Conteneur des icônes */}
       <div className="flex flex-col items-center gap-4 lg:gap-7 flex-1 justify-center cursor-pointer">
         {icons.map((icon) => (
@@ -18,7 +18,7 @@ const Sidebar = () => {
       </div>
 
       {/* Copyright en bas */}
-      <div className="mb-2 lg:mb-5">
+      <div>
         <p className="text-white text-xs [writing-mode:vertical-rl] rotate-180">
           Copyright, SportSee 2020
         </p>

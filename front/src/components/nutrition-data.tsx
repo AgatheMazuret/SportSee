@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchNutritionData, NutritionDataType } from "../services/api";
 import Card from "./card";
 import { useState, useEffect } from "react";
+import ErrorMessage from "./error-message";
 
 const NutritionData = ({ userId: propUserId }: { userId?: number }) => {
   // État local pour stocker l'userId, avec une valeur par défaut de 12
@@ -21,10 +22,15 @@ const NutritionData = ({ userId: propUserId }: { userId?: number }) => {
     queryFn: () => fetchNutritionData(userId), // Fonction qui récupère les données de nutrition
   });
 
-  if (isLoading)
-    return <p className="text-center text-gray-500">Chargement...</p>;
-  if (error) return <p className="text-center text-red-500">{error.message}</p>;
-  if (!data) return <p className="text-center">Aucune donnée disponible</p>;
+  // Gestion du chargement et des erreurs
+  if (isLoading) return <div>Chargement...</div>;
+  if (error) return <ErrorMessage />;
+  if (!data)
+    return (
+      <div className="text-center">
+        Aucune donnée disponible pour cet utilisateur.
+      </div>
+    );
 
   // Affichage des données nutritionnelles sous forme de cartes
   return (
