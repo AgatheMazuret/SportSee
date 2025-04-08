@@ -26,7 +26,7 @@ const App = ({ propUserId }: { propUserId?: number }) => {
       <Header />
       <div className="flex h-screen">
         <Sidebar />
-        <div className="flex-1 p-[68px_70px_70px_65px] md:p-[30px_30px_30px_30px]">
+        <div className="flex-1 xl:p-[68px_70px_70px_65px] md:p-[20px_8px_20px_16px]">
           <div className="mb-20">
             {/* Passer userId comme prop au composant Hello */}
             <Hello userId={userId} />
@@ -35,7 +35,7 @@ const App = ({ propUserId }: { propUserId?: number }) => {
             <div className="flex-1 flex flex-col gap-8">
               {/* Afficher le graphique des activités */}
               <ActivityChart userId={userId} />
-              <div className="flex gap-8 w-full h-full md:h-[275px]">
+              <div className="flex xl:gap-12 w-full h-full md:gap-2 md:h-[275px] md:flex-row flex-col">
                 {/* Afficher les graphiques de longueur de section, énergie dépensée, et score */}
                 <SectionLengthChart userId={userId} />
                 <SpentEnergyChart userId={userId} />

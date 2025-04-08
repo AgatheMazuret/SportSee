@@ -118,38 +118,47 @@ const ActivityChart = ({ userId: propUserId }: ActivityChartProps) => {
 
   return (
     <div className="p-4 bg-white rounded-xl shadow-lg">
-      {/* Titre du graphique */}
-      <h3 className="text-l font-semibold mb-4">Activité quotidienne</h3>
+      {/* Conteneur du titre et de la légende */}
+      <div className="flex justify-between items-center mb-4">
+        {/* Titre du graphique */}
+        <h3 className="text-l font-semibold">Activité quotidienne</h3>
 
-      <ResponsiveContainer width="100%" height={320}>
-        <BarChart data={data}>
-          <CartesianGrid vertical={false} strokeDasharray="5 5" />
-          <XAxis dataKey="day" tickFormatter={formatDay} />
-          <YAxis orientation="right" />
-          <Tooltip content={<CustomTooltip />} />
-          {/* Légende personnalisée en haut à droite */}
-          <Legend
-            layout="horizontal"
-            verticalAlign="top"
-            align="right"
-            content={(props) => (
-              <CustomLegend {...(props as CustomLegendProps)} />
-            )}
+        {/* Légende positionnée à droite du titre */}
+        <div className="flex ml-4">
+          <CustomLegend
+            {...{
+              payload: [
+                { dataKey: "kilogram", color: "#282D30" },
+                { dataKey: "calories", color: "#E60000" },
+              ],
+            }}
           />
-          <Bar
-            dataKey="kilogram"
-            fill="#282D30"
-            barSize={8} // Taille des barres
-            radius={[7, 7, 0, 0]} // Arrondir le haut des barres (gauche, droite, bas gauche, bas droite)
-          />
-          <Bar
-            dataKey="calories"
-            fill="#E60000"
-            barSize={8} // Taille des barres
-            radius={[7, 7, 0, 0]} // Arrondir le haut des barres (gauche, droite, bas gauche, bas droite)
-          />
-        </BarChart>
-      </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Graphique */}
+      <div className="relative">
+        <ResponsiveContainer width="100%" height={320}>
+          <BarChart data={data}>
+            <CartesianGrid vertical={false} strokeDasharray="5 5" />
+            <XAxis dataKey="day" tickFormatter={formatDay} />
+            <YAxis orientation="right" />
+            <Tooltip content={<CustomTooltip />} />
+            <Bar
+              dataKey="kilogram"
+              fill="#282D30"
+              barSize={8}
+              radius={[7, 7, 0, 0]}
+            />
+            <Bar
+              dataKey="calories"
+              fill="#E60000"
+              barSize={8}
+              radius={[7, 7, 0, 0]}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };
