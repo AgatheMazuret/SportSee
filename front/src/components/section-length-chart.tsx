@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchSessionData } from "../services/api"; // Assure-toi d'avoir bien ce service d'API
+import { fetchSessionData } from "../services/api";
 import {
   LineChart,
   Line,
@@ -7,7 +8,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
   TooltipProps,
 } from "recharts";
@@ -15,17 +15,16 @@ import ErrorMessage from "./error-message";
 
 const dayAbbreviations = ["L", "M", "M", "J", "V", "S", "D"];
 
-// Fonction de Tooltip personnalisé pour afficher les données au survol
 const customTooltip = ({ active, payload }: TooltipProps<number, string>) => {
   if (active && payload && payload.length > 0) {
-    const sessionLength = payload[0]?.value ?? 0; // Durée de la session
-    const dayIndex = payload[0]?.payload?.day ?? 1; // Index du jour
-    const day = dayAbbreviations[dayIndex - 1] || ""; // Récupérer l'abréviation du jour
+    const sessionLength = payload[0]?.value ?? 0;
+    const dayIndex = payload[0]?.payload?.day ?? 1;
+    const day = dayAbbreviations[dayIndex - 1] || "";
 
     return (
       <div
         style={{
-          backgroundColor: "rgba(0, 0, 0, 0.7)", // Fond sombre pour le tooltip
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
           color: "white",
           padding: "5px",
           borderRadius: "5px",
@@ -40,68 +39,88 @@ const customTooltip = ({ active, payload }: TooltipProps<number, string>) => {
 };
 
 const SectionLengthChart = ({ userId }: { userId?: number }) => {
-  // Fonction pour récupérer l'userId à partir de l'URL si non fourni en prop
   const getUserIdFromUrl = () => {
-    const regex = /[?&]userId=(\d+)/; // Expression régulière pour extraire userId de l'URL
+    const regex = /[?&]userId=(\d+)/;
     const match = window.location.href.match(regex);
     return match ? parseInt(match[1], 10) : 12;
   };
 
-  // Prendre l'userId passé en prop ou celui extrait de l'URL
   const finalUserId = userId ?? getUserIdFromUrl();
 
-  // Requête pour récupérer les données de session associées à l'userId
   const {
-    data = [], // Données de session par défaut vides si aucune donnée disponible
+    data = [],
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["sessionData", finalUserId], // Utilisation de l'userId comme clé de requête
-    queryFn: () => fetchSessionData(finalUserId), // Fonction pour récupérer les données
+    queryKey: ["sessionData", finalUserId],
+    queryFn: () => fetchSessionData(finalUserId),
   });
 
-  // Gestion du chargement et des erreurs
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
   if (isLoading) return <div>Chargement...</div>;
   if (error) return <ErrorMessage />;
-  if (!data)
+  if (!data || data.length === 0)
     return (
       <div className="text-center">
         Aucune donnée disponible pour cet utilisateur.
       </div>
     );
 
+  // Largeur dynamique de la bande rouge foncé
+  const rightOverlayWidth =
+    activeIndex !== null && data.length > 1
+      ? `${((data.length - 1 - activeIndex) / (data.length - 1)) * 100}%`
+      : "0%";
+
   return (
-    <div className="w-full h-full rounded-xl overflow-hidden bg-red-600">
+    <div className="relative w-full h-full pt-[55px] rounded-xl overflow-hidden bg-red-600">
+      {/* Titre centré au-dessus du graphique */}
+      <div className="absolute top-5 left-1/2 transform -translate-x-1/2 text-white text-opacity-50 text-sm font-medium z-10">
+        Durée moyenne des sessions
+      </div>
+
+      {/* Bande dynamique rouge foncé */}
+      <div
+        className="absolute top-0 bottom-0 right-0 bg-[#c20000] opacity-70 z-0 transition-all duration-200"
+        style={{ width: rightOverlayWidth }}
+      />
+
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
-          <CartesianGrid vertical={false} horizontal={false} />{" "}
-          {/* Grille du graphique */}
-          <YAxis hide={true} /> {/* Masquer l'axe Y */}
+        <LineChart
+          data={data}
+          onMouseMove={(e) => {
+            if (e.isTooltipActive) {
+              const index = e.activeTooltipIndex;
+              setActiveIndex(index !== undefined ? index : null);
+            }
+          }}
+          onMouseLeave={() => setActiveIndex(null)}
+        >
+          <CartesianGrid vertical={false} horizontal={false} />
+          <YAxis hide={true} />
           <XAxis
-            dataKey="day" // Utilisation de 'day' pour l'axe X
-            tickFormatter={(value) => dayAbbreviations[value - 1]} // Formater les ticks pour afficher les abréviations des jours
-            tick={{ fill: "white" }} // Couleur des ticks en blanc
-            axisLine={false} // Supprimer la ligne de l'axe X
-            tickLine={false} // Supprimer les lignes de ticks
+            dataKey="day"
+            tickFormatter={(value) => dayAbbreviations[value - 1]}
+            tick={{ fill: "white" }}
+            axisLine={false}
+            tickLine={false}
           />
-          <Tooltip content={customTooltip} />{" "}
-          {/* Affichage du tooltip personnalisé */}
-          <Legend
-            layout="horizontal"
-            verticalAlign="top"
-            align="right"
-            formatter={(value) => (
-              <span style={{ color: "white" }}>{value}</span> // Formater le texte de la légende
-            )}
-          />
+          <Tooltip content={customTooltip} />
           <Line
-            name="Durée moyenne des sessions" // Nom de la ligne
-            dataKey="sessionLength" // Clé de données utilisée pour la ligne
-            stroke="white" // Couleur de la ligne
-            strokeWidth={3} // Largeur de la ligne
-            type="monotone" // Type de ligne (lisse)
-            strokeLinejoin="round" // Arrondi des joints de la ligne
-            dot={false} // Désactiver l'affichage des points sur la ligne
+            name="Durée moyenne des sessions"
+            dataKey="sessionLength"
+            stroke="white"
+            strokeWidth={3}
+            type="monotone"
+            strokeLinejoin="round"
+            dot={false}
+            activeDot={{
+              stroke: "rgba(255, 255, 255, 0.5)",
+              strokeWidth: 10,
+              r: 5,
+              fill: "#fff",
+            }}
           />
         </LineChart>
       </ResponsiveContainer>

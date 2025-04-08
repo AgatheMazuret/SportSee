@@ -18,11 +18,20 @@ interface ActivityChartProps {
 }
 
 // Composant personnalisé pour dessiner des cercles dans la légende
-const CustomLegend = (props: any) => {
-  const { payload } = props; // Récupère les données de la légende
+interface LegendPayload {
+  dataKey: string;
+  color: string;
+}
+
+interface CustomLegendProps {
+  payload: LegendPayload[];
+}
+
+const CustomLegend = (props: CustomLegendProps) => {
+  const { payload = [] } = props; // Récupère les données de la légende ou utilise un tableau vide par défaut
   return (
     <ul className="flex space-x-8">
-      {payload.map((entry: any) => (
+      {payload.map((entry: LegendPayload) => (
         <li key={entry.dataKey} className="flex items-center">
           <div
             className="w-4 h-4 rounded-full"
@@ -68,6 +77,39 @@ const ActivityChart = ({ userId: propUserId }: ActivityChartProps) => {
     );
   }
 
+  interface CustomTooltipProps {
+    active?: boolean;
+    payload?: { dataKey: string; value: number }[];
+  }
+
+  const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
+    if (active && payload && payload.length === 2) {
+      const weight = payload.find(
+        (p: { dataKey: string; value: number }) => p.dataKey === "kilogram"
+      )?.value;
+      const calories = payload.find(
+        (p: { dataKey: string; value: number }) => p.dataKey === "calories"
+      )?.value;
+
+      return (
+        <div
+          className="text-white text-sm p-2 rounded"
+          style={{
+            backgroundColor: "#E60000",
+            lineHeight: "1.5",
+            textAlign: "center",
+            width: "70px",
+          }}
+        >
+          <p>{weight}kg</p>
+          <p>{calories}Kcal</p>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   // Fonction pour formater le jour à partir de la date complète
   const formatDay = (date: string) => {
     const day = new Date(date).getDate();
@@ -84,23 +126,27 @@ const ActivityChart = ({ userId: propUserId }: ActivityChartProps) => {
           <CartesianGrid vertical={false} strokeDasharray="5 5" />
           <XAxis dataKey="day" tickFormatter={formatDay} />
           <YAxis orientation="right" />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
           {/* Légende personnalisée en haut à droite */}
           <Legend
             layout="horizontal"
             verticalAlign="top"
             align="right"
-            content={<CustomLegend />}
+            content={(props) => (
+              <CustomLegend {...(props as CustomLegendProps)} />
+            )}
           />
           <Bar
             dataKey="kilogram"
             fill="#282D30"
-            barSize={14} // Taille des barres
+            barSize={8} // Taille des barres
+            radius={[7, 7, 0, 0]} // Arrondir le haut des barres (gauche, droite, bas gauche, bas droite)
           />
           <Bar
             dataKey="calories"
             fill="#E60000"
-            barSize={14} // Taille des barres
+            barSize={8} // Taille des barres
+            radius={[7, 7, 0, 0]} // Arrondir le haut des barres (gauche, droite, bas gauche, bas droite)
           />
         </BarChart>
       </ResponsiveContainer>

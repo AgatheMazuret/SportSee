@@ -35,7 +35,7 @@ const App = ({ propUserId }: { propUserId?: number }) => {
             <div className="flex-1 flex flex-col gap-8">
               {/* Afficher le graphique des activités */}
               <ActivityChart userId={userId} />
-              <div className="flex gap-8 w-full h-full md:h-[205px]">
+              <div className="flex gap-8 w-full h-full md:h-[275px]">
                 {/* Afficher les graphiques de longueur de section, énergie dépensée, et score */}
                 <SectionLengthChart userId={userId} />
                 <SpentEnergyChart userId={userId} />

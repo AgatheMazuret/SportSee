@@ -34,7 +34,7 @@ const NutritionData = ({ userId: propUserId }: { userId?: number }) => {
 
   // Affichage des données nutritionnelles sous forme de cartes
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-17 max-[1440px]:gap-11">
       <Card
         icon="/icon-calories.svg"
         title="Calories"

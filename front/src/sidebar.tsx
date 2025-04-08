@@ -19,7 +19,7 @@ const Sidebar = () => {
 
       {/* Copyright en bas */}
       <div>
-        <p className="text-white text-xs [writing-mode:vertical-rl] rotate-180">
+        <p className="text-white mb-6 text-xs [writing-mode:vertical-rl] rotate-180">
           Copyright, SportSee 2020
         </p>
       </div>
