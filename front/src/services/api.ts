@@ -1,4 +1,15 @@
-const API_BASE_URL = "http://localhost:3000/user";
+// Définir un flag pour choisir entre les données mock et les données du backend
+const USE_MOCK_DATA = true; // Mets à false pour utiliser les vraies données du backend
+
+import mockData from "../../public/mock-data.json";
+
+// Fonction d'aide pour récupérer les données depuis l'API si USE_MOCK_DATA est false
+const getData = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Erreur API : ${url}`);
+  const data = await res.json();
+  return data.data;
+};
 
 /** Structure des données d'activité */
 export type ActivityData = {
@@ -7,25 +18,19 @@ export type ActivityData = {
   calories: number;
 };
 
-export type FormattedActivityData = {
-  day: string;
-  kilogram: number;
-  calories: number;
-};
-
-/** Récupérer les données d'activité d'un utilisateur */
 export const fetchActivityData = async (
   userId: number
-): Promise<FormattedActivityData[]> => {
-  const response = await fetch(`${API_BASE_URL}/${userId}/activity`);
-  if (!response.ok) throw new Error("Erreur de chargement des activités");
-
-  const responseData = await response.json();
-  return responseData.data.sessions.map((item: ActivityData) => ({
-    day: item.day,
-    kilogram: item.kilogram,
-    calories: item.calories,
-  }));
+): Promise<ActivityData[]> => {
+  if (USE_MOCK_DATA) {
+    const user = mockData.userActivity.find(
+      (u: { userId: number }) => u.userId === userId
+    );
+    if (!user) throw new Error("Activité non trouvée");
+    return user.sessions;
+  } else {
+    const data = await getData(`http://localhost:3000/user/${userId}/activity`);
+    return data.sessions;
+  }
 };
 
 /** Structure des données nutritionnelles */
@@ -36,18 +41,20 @@ export interface NutritionDataType {
   lipidCount: number;
 }
 
-/** Récupérer les données nutritionnelles d'un utilisateur */
 export const fetchNutritionData = async (
   userId: number
 ): Promise<NutritionDataType> => {
-  const response = await fetch(`${API_BASE_URL}/${userId}`);
-  if (!response.ok) throw new Error("Impossible de récupérer les données");
-
-  const result = await response.json();
-  if (!result.data?.keyData)
-    throw new Error("Données nutritionnelles manquantes");
-
-  return result.data.keyData;
+  if (USE_MOCK_DATA) {
+    const user = mockData.userMainData.find(
+      (u: { id: number }) => u.id === userId
+    );
+    if (!user || !user.keyData)
+      throw new Error("Données nutritionnelles non trouvées");
+    return user.keyData;
+  } else {
+    const data = await getData(`http://localhost:3000/user/${userId}`);
+    return data.keyData;
+  }
 };
 
 /** Structure des performances physiques */
@@ -56,63 +63,66 @@ export type PerformanceData = {
   value: number;
 };
 
-/** Récupérer les performances d'un utilisateur */
 export const fetchPerformanceData = async (
   userId: number
 ): Promise<PerformanceData[]> => {
-  const response = await fetch(`${API_BASE_URL}/${userId}/performance`);
-  if (!response.ok) throw new Error("Erreur de récupération des performances");
-
-  const responseData = await response.json();
-  if (!responseData.data?.data || !responseData.data?.kind)
-    throw new Error("Format des données incorrect");
-
-  const { data, kind } = responseData.data;
-
-  return data.map((item: { kind: number; value: number }) => ({
-    subject: kind[item.kind] || "Inconnu",
-    value: item.value,
-  }));
+  if (USE_MOCK_DATA) {
+    const perf = mockData.userPerformance.find(
+      (p: { userId: number }) => p.userId === userId
+    );
+    if (!perf) throw new Error("Données de performance non trouvées");
+    return perf.data.map((item: { kind: number; value: number }) => ({
+      subject:
+        perf.kind[item.kind as unknown as keyof typeof perf.kind] || "Inconnu",
+      value: item.value,
+    }));
+  } else {
+    const data = await getData(
+      `http://localhost:3000/user/${userId}/performance`
+    );
+    return data.data.map((item: { kind: string; value: number }) => ({
+      subject: item.kind,
+      value: item.value,
+    }));
+  }
 };
 
 /** Récupérer le score d'un utilisateur */
 export const fetchUserScore = async (userId: number): Promise<number> => {
-  const response = await fetch(`${API_BASE_URL}/${userId}`);
-  if (!response.ok) throw new Error("Erreur de récupération du score");
-
-  const responseData = await response.json();
-  const score = responseData.data?.todayScore ?? responseData.data?.score;
-  if (score === undefined) throw new Error("Données score manquantes");
-
-  return score;
+  if (USE_MOCK_DATA) {
+    const user = mockData.userMainData.find(
+      (u: { id: number }) => u.id === userId
+    );
+    if (!user) throw new Error("Utilisateur non trouvé");
+    return user.todayScore ?? user.score;
+  } else {
+    const data = await getData(`http://localhost:3000/user/${userId}`);
+    return data.todayScore ?? data.score;
+  }
 };
 
-/** Structure des sessions moyennes */
+/** Moyenne des sessions */
 export type Length = {
   day: number;
   sessionLength: number;
 };
 
-export type FormattedLengthData = {
-  day: number;
-  sessionLength: number;
+export const fetchSessionData = async (userId: number): Promise<Length[]> => {
+  if (USE_MOCK_DATA) {
+    const session = mockData.userAverageSessions.find(
+      (s: { userId: number }) => s.userId === userId
+    );
+    if (!session) throw new Error("Sessions moyennes non trouvées");
+    return session.sessions;
+  } else {
+    const data = await getData(
+      `http://localhost:3000/user/${userId}/average-sessions`
+    );
+    return data.sessions;
+  }
 };
 
-/** Récupérer la durée moyenne des sessions d'un utilisateur */
-export const fetchSessionData = async (
-  userId: number
-): Promise<FormattedLengthData[]> => {
-  const response = await fetch(`${API_BASE_URL}/${userId}/average-sessions`);
-  if (!response.ok) throw new Error("Erreur récupération sessions");
-
-  const responseData = await response.json();
-  return responseData.data.sessions.map((item: Length) => ({
-    day: item.day,
-    sessionLength: item.sessionLength,
-  }));
-};
-
-/** Récupérer toutes les données utilisateur en une seule fois */
+/** Regrouper les données */
 export const fetchAllUserData = async (userId: number) => {
   try {
     const [activity, nutrition, performance, score, sessions] =
@@ -133,7 +143,7 @@ export const fetchAllUserData = async (userId: number) => {
       error: false,
     };
   } catch (error) {
-    console.error("❌ Une erreur est survenue :", error);
+    console.error("❌ Erreur lors du chargement :", error);
     return {
       activity: [],
       nutrition: null,
