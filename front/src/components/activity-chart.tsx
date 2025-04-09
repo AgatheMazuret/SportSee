@@ -19,7 +19,7 @@ interface ActivityChartProps {
 
 interface CustomTooltipProps {
   active?: boolean;
-  payload?: { dataKey: string; value: number }[]; // Données pour l'affichage du tooltip
+  payload?: { dataKey: string; value: number }[];
 }
 
 interface LegendPayload {
@@ -55,8 +55,8 @@ const CustomLegend = ({ payload = [] }: CustomLegendProps) => (
 // Composant personnalisé pour afficher le tooltip dans le graphique
 const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   if (active && payload && payload.length === 2) {
-    const weight = payload.find((p) => p.dataKey === "kilogram")?.value; // Récupère le poids
-    const calories = payload.find((p) => p.dataKey === "calories")?.value; // Récupère les calories
+    const weight = payload.find((p) => p.dataKey === "kilogram")?.value;
+    const calories = payload.find((p) => p.dataKey === "calories")?.value;
 
     return (
       <div
@@ -74,7 +74,7 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
     );
   }
 
-  return null; // Ne rien afficher si le tooltip n'est pas actif
+  return null;
 };
 
 // Composant pour afficher un message personnalisé à l'utilisateur
@@ -115,41 +115,38 @@ const ActivityDashboard = ({ userId: propUserId }: ActivityChartProps) => {
   const getUserIdFromUrl = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("userId");
-    return userId ? parseInt(userId, 10) : 12; // Si l'userId n'est pas trouvé dans l'URL, utiliser 12 par défaut
+    return userId ? parseInt(userId, 10) : 12;
   };
 
-  const userId = propUserId ?? getUserIdFromUrl(); // Utiliser soit le userId fourni en prop, soit celui de l'URL
+  const userId = propUserId ?? getUserIdFromUrl();
 
   // Utilisation de React Query pour récupérer les données d'activité
   const { data, error, isLoading } = useQuery({
     queryKey: ["activity", userId],
-    queryFn: () => fetchActivityData(userId), // Appel à la fonction fetchActivityData
-    staleTime: 1000 * 60 * 5, // Les données restent fraîches pendant 5 minutes
+    queryFn: () => fetchActivityData(userId),
+    staleTime: 1000 * 60 * 5,
   });
 
   // Fonction pour formater la date dans le graphique
   const formatDay = (date: string) => {
     const day = new Date(date).getDate();
-    return day.toString(); // Retourne le jour du mois
+    return day.toString();
   };
 
-  if (isLoading) return <div>Chargement...</div>; // Affichage du message de chargement
-  if (error) return <ErrorMessage />; // Affichage du message d'erreur
+  if (isLoading) return <div>Chargement...</div>;
+  if (error) return <ErrorMessage />;
   if (!data || data.length === 0) {
     return (
       <div className="text-center">
         Aucune donnée disponible pour cet utilisateur.{" "}
-        {/* Affichage si aucune donnée n'est disponible */}
       </div>
     );
   }
 
   return (
-    <div className="p-4 bg-white rounded-xl shadow-lg">
+    <div className="p-2 bg-white rounded-xl shadow-lg">
       <Hello userId={userId} />{" "}
-      {/* Affiche le message personnalisé à l'utilisateur */}
-      {/* Titre + Légende */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-2">
         <h3 className="text-l font-semibold">Activité quotidienne</h3>
         <CustomLegend
           payload={[
@@ -173,13 +170,13 @@ const ActivityDashboard = ({ userId: propUserId }: ActivityChartProps) => {
               dataKey="kilogram"
               fill="#282D30"
               barSize={8}
-              radius={[7, 7, 0, 0]} // Barres arrondies
+              radius={[7, 7, 0, 0]}
             />
             <Bar
               dataKey="calories"
               fill="#E60000"
               barSize={8}
-              radius={[7, 7, 0, 0]} // Barres arrondies
+              radius={[7, 7, 0, 0]}
             />
           </BarChart>
         </ResponsiveContainer>

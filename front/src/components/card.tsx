@@ -7,7 +7,7 @@ interface CardProps {
 
 const Card = ({ icon, title, value, unit }: CardProps) => {
   return (
-    <div className="flex w-[150px] h-[65px] xl:w-[280px] xl:h-[124px] items-center bg-gray-100 rounded-xl">
+    <div className="flex w-[150px] h-[85px] xl:w-[280px] xl:h-[124px] items-center bg-gray-100 rounded-xl">
       <img
         className="flex ml-[10px] xl:w-auto w-[40px]"
         src={icon}

@@ -18,17 +18,17 @@ const dayAbbreviations = ["L", "M", "M", "J", "V", "S", "D"];
 // Fonction personnalisée pour afficher le tooltip
 const customTooltip = ({ active, payload }: TooltipProps<number, string>) => {
   if (active && payload && payload.length > 0) {
-    const sessionLength = payload[0]?.value ?? 0; // Durée de la session
-    const dayIndex = payload[0]?.payload?.day ?? 1; // Indice du jour (1 = Lundi, 7 = Dimanche)
-    const day = dayAbbreviations[dayIndex - 1] || ""; // Trouver l'abréviation du jour
+    const sessionLength = payload[0]?.value ?? 0;
+    const dayIndex = payload[0]?.payload?.day ?? 1;
+    const day = dayAbbreviations[dayIndex - 1] || "";
 
     return (
       <div
         style={{
-          backgroundColor: "rgba(0, 0, 0, 0.7)", // Fond sombre pour le tooltip
-          color: "white", // Couleur du texte du tooltip
-          padding: "5px", // Espacement interne du tooltip
-          borderRadius: "5px", // Coins arrondis
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          color: "white",
+          padding: "5px",
+          borderRadius: "5px",
         }}
       >
         <p>{`Jour: ${day}`}</p>
@@ -36,19 +36,19 @@ const customTooltip = ({ active, payload }: TooltipProps<number, string>) => {
       </div>
     );
   }
-  return null; // Si le tooltip n'est pas actif, ne rien afficher
+  return null;
 };
 
 // Composant pour afficher le graphique de la durée des sessions
 const SectionLengthChart = ({ userId }: { userId?: number }) => {
   // Fonction pour récupérer l'userId depuis l'URL si nécessaire
   const getUserIdFromUrl = () => {
-    const regex = /[?&]userId=(\d+)/; // Expression régulière pour extraire l'userId
+    const regex = /[?&]userId=(\d+)/;
     const match = window.location.href.match(regex);
-    return match ? parseInt(match[1], 10) : 12; // Retourne l'userId de l'URL ou 12 par défaut
+    return match ? parseInt(match[1], 10) : 12;
   };
 
-  const finalUserId = userId ?? getUserIdFromUrl(); // Utilisation de l'userId provenant de la prop ou de l'URL
+  const finalUserId = userId ?? getUserIdFromUrl();
 
   // Utilisation de React Query pour récupérer les données de session
   const {
@@ -56,15 +56,16 @@ const SectionLengthChart = ({ userId }: { userId?: number }) => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["sessionData", finalUserId], // Clé de la requête pour la mise en cache
-    queryFn: () => fetchSessionData(finalUserId), // Fonction pour récupérer les données de session
+    queryKey: ["sessionData", finalUserId],
+    queryFn: () => fetchSessionData(finalUserId),
+    staleTime: 1000 * 60 * 5,
   });
 
-  const [activeIndex, setActiveIndex] = useState<number | null>(null); // État pour gérer l'index du point actif dans le graphique
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   // Gestion des états de chargement et d'erreur
-  if (isLoading) return <div>Chargement...</div>; // Affiche un message de chargement pendant la récupération des données
-  if (error) return <ErrorMessage />; // Affiche un message d'erreur si la requête échoue
+  if (isLoading) return <div>Chargement...</div>;
+  if (error) return <ErrorMessage />;
   if (!data || data.length === 0)
     return (
       <div className="text-center">
@@ -95,40 +96,40 @@ const SectionLengthChart = ({ userId }: { userId?: number }) => {
       {/* Conteneur Responsive pour afficher le graphique à taille adaptative */}
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
-          data={data} // Données à afficher dans le graphique
+          data={data}
           onMouseMove={(e) => {
             if (e.isTooltipActive) {
-              const index = e.activeTooltipIndex; // Récupère l'index du point actif lors du survol
-              setActiveIndex(index !== undefined ? index : null); // Met à jour l'index actif
+              const index = e.activeTooltipIndex;
+              setActiveIndex(index !== undefined ? index : null);
             }
           }}
-          onMouseLeave={() => setActiveIndex(null)} // Réinitialise l'index actif lorsqu'on quitte le graphique
+          onMouseLeave={() => setActiveIndex(null)}
         >
           <CartesianGrid vertical={false} horizontal={false} />{" "}
           {/* Grille du graphique (pas de lignes verticales ni horizontales) */}
           <YAxis hide={true} /> {/* Cache l'axe Y (pas nécessaire ici) */}
           <XAxis
-            dataKey="day" // Utilisation de la clé 'day' pour l'axe des X
-            tickFormatter={(value) => dayAbbreviations[value - 1]} // Formattage des jours avec des abréviations
-            tick={{ fill: "white" }} // Couleur des ticks de l'axe des X
-            axisLine={false} // Cache la ligne de l'axe des X
-            tickLine={false} // Cache les lignes des ticks
+            dataKey="day"
+            tickFormatter={(value) => dayAbbreviations[value - 1]}
+            tick={{ fill: "white" }}
+            axisLine={false}
+            tickLine={false}
           />
           <Tooltip content={customTooltip} />{" "}
           {/* Utilisation du tooltip personnalisé */}
           <Line
             name="Durée moyenne des sessions"
-            dataKey="sessionLength" // Utilisation de la clé 'sessionLength' pour les données des lignes
-            stroke="white" // Couleur de la ligne
-            strokeWidth={3} // Largeur de la ligne
-            type="monotone" // Courbe lissée pour la ligne
-            strokeLinejoin="round" // Coins arrondis pour les courbes
-            dot={false} // Pas d'indicateurs (points) sur la ligne
+            dataKey="sessionLength"
+            stroke="white"
+            strokeWidth={3}
+            type="monotone"
+            strokeLinejoin="round"
+            dot={false}
             activeDot={{
-              stroke: "rgba(255, 255, 255, 0.5)", // Couleur de l'indicateur actif
-              strokeWidth: 10, // Largeur de l'indicateur actif
-              r: 5, // Rayon de l'indicateur actif
-              fill: "#fff", // Couleur de remplissage de l'indicateur actif
+              stroke: "rgba(255, 255, 255, 0.5)",
+              strokeWidth: 10,
+              r: 5,
+              fill: "#fff",
             }}
           />
         </LineChart>

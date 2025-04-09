@@ -23,9 +23,9 @@ const App = ({ propUserId }: { propUserId?: number }) => {
   return (
     <>
       <Header />
-      <div className="flex h-screen">
+      <div className="flex xl:h-[884px] md:h-[837px]">
         <Sidebar />
-        <div className="flex-1 xl:p-[68px_70px_70px_65px] md:p-[20px_8px_20px_16px]">
+        <div className="flex-1 xl:p-[68px_70px_70px_65px] md:p-[20px_8px_20px_16px] ">
           <div className="flex w-full gap-8">
             <div className="flex-1 flex flex-col gap-8">
               {/* Afficher le graphique des activités */}

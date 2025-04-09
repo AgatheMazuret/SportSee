@@ -22,7 +22,7 @@ const translations = {
 
 // Fonction pour traduire un terme en français
 const translate = (term: string) => {
-  return translations[term as keyof typeof translations] || term; // Retourne la traduction ou le terme original s'il n'y a pas de traduction
+  return translations[term as keyof typeof translations] || term;
 };
 
 // Composant pour afficher le graphique des performances
@@ -38,19 +38,18 @@ const PerformanceChart = ({ userId: propUserId }: { userId?: number }) => {
 
   // Utilisation de React Query pour récupérer les données de performance
   const {
-    data = [], // Données de performance (vide si aucune donnée n'est récupérée)
+    data = [],
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["performanceData", userId], // Clé de la requête pour la mise en cache
-    queryFn: () => fetchPerformanceData(userId), // Fonction pour récupérer les données depuis l'API
+    queryKey: ["performanceData", userId],
+    queryFn: () => fetchPerformanceData(userId),
     staleTime: 1000 * 60 * 5,
   });
 
   // Gestion des états de chargement et d'erreur
-  if (isLoading) return <div>Chargement...</div>; // Affiche un message de chargement
-  if (error || !data.length) return <div>Aucune donnée disponible</div>; // Affiche un message d'erreur ou si aucune donnée n'est présente
-
+  if (isLoading) return <div>Chargement...</div>;
+  if (error || !data.length) return <div>Aucune donnée disponible</div>;
   const orderedData = formatPerformanceData(data);
 
   // Affichage du graphique radar avec les données de performance
@@ -62,19 +61,19 @@ const PerformanceChart = ({ userId: propUserId }: { userId?: number }) => {
           <PolarGrid stroke="#FFFFFF" strokeOpacity={0.5} />
           {/* Axe des angles (les sujets de performance), avec traduction */}
           <PolarAngleAxis
-            dataKey="subject" // Utilisation de la clé 'subject' pour l'axe des angles
-            tick={{ fill: "#FFFFFF", fontSize: 12 }} // Style des ticks de l'axe
-            tickFormatter={(value) => translate(value)} // Traduction des termes en français
+            dataKey="subject"
+            tick={{ fill: "#FFFFFF", fontSize: 12 }}
+            tickFormatter={(value) => translate(value)}
           />
           {/* Suppression des ticks et de la ligne de l'axe radial */}
           <PolarRadiusAxis tick={false} axisLine={false} />
           {/* Le graphique radar qui affiche les valeurs de performance */}
           <Radar
             name="Utilisateur"
-            dataKey="value" // Utilisation de la clé 'value' pour les valeurs du radar
-            stroke="#FF0101" // Couleur du contour
-            fill="#FF0101" // Couleur de remplissage
-            fillOpacity={0.6} // Transparence du remplissage
+            dataKey="value"
+            stroke="#FF0101"
+            fill="#FF0101"
+            fillOpacity={0.6}
           />
         </RadarChart>
       </ResponsiveContainer>
