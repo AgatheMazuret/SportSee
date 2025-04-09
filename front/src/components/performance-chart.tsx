@@ -9,7 +9,7 @@ import {
 } from "recharts";
 import { fetchPerformanceData } from "../services/api";
 
-// Dictionnaire de traduction des termes
+// Dictionnaire de traduction des termes pour les sujets de performance
 const translations = {
   intensity: "Intensité",
   speed: "Vitesse",
@@ -19,35 +19,37 @@ const translations = {
   cardio: "Cardio",
 };
 
-// Fonction pour traduire les termes
+// Fonction pour traduire un terme en français
 const translate = (term: string) => {
-  return translations[term as keyof typeof translations] || term; // Si aucune traduction n'est trouvée, retourner le terme d'origine
+  return translations[term as keyof typeof translations] || term; // Retourne la traduction ou le terme original s'il n'y a pas de traduction
 };
 
+// Composant pour afficher le graphique des performances
 const PerformanceChart = ({ userId: propUserId }: { userId?: number }) => {
   const url = window.location.href;
 
-  // Expression régulière pour extraire l'userId de l'URL si disponible
+  // Extraction de l'userId depuis l'URL via une expression régulière
   const regex = /[?&]userId=(\d+)/;
   const match = url.match(regex);
 
-  // Déterminer l'userId à utiliser : priorité à la prop, sinon prendre celui de l'URL ou 12 par défaut
+  // Détermine l'userId : priorité à la prop, sinon celui de l'URL, sinon 12 par défaut
   const userId = propUserId ?? (match ? parseInt(match[1], 10) : 12);
 
-  // Effectuer la requête pour récupérer les données de performance
+  // Utilisation de React Query pour récupérer les données de performance
   const {
-    data = [], // Données de performance, valeur par défaut vide si aucune donnée n'est récupérée
+    data = [], // Données de performance (vide si aucune donnée n'est récupérée)
     isLoading,
     error,
   } = useQuery({
     queryKey: ["performanceData", userId], // Clé de la requête pour la mise en cache
-    queryFn: () => fetchPerformanceData(userId), // Fonction pour récupérer les données de performance
+    queryFn: () => fetchPerformanceData(userId), // Fonction pour récupérer les données depuis l'API
   });
 
-  if (isLoading) return <div>Chargement...</div>;
-  if (error || !data.length) return <div>Aucune donnée disponible</div>;
+  // Gestion des états de chargement et d'erreur
+  if (isLoading) return <div>Chargement...</div>; // Affiche un message de chargement
+  if (error || !data.length) return <div>Aucune donnée disponible</div>; // Affiche un message d'erreur ou si aucune donnée n'est présente
 
-  // Réorganiser les données selon l'ordre souhaité
+  // Réorganiser les données pour correspondre à l'ordre des sujets du graphique
   const orderedData = [
     {
       subject: "intensity",
@@ -80,22 +82,23 @@ const PerformanceChart = ({ userId: propUserId }: { userId?: number }) => {
     <div className="w-full h-full rounded-xl overflow-hidden bg-[#282D30]">
       <ResponsiveContainer width="100%" height="100%">
         <RadarChart outerRadius={80} data={orderedData}>
-          {/* Grille polaire */}
+          {/* Grille polaire pour l'arrière-plan du graphique */}
           <PolarGrid stroke="#FFFFFF" strokeOpacity={0.5} />
-          {/* Axe des angles avec les étiquettes traduites */}
+          {/* Axe des angles (les sujets de performance), avec traduction */}
           <PolarAngleAxis
             dataKey="subject" // Utilisation de la clé 'subject' pour l'axe des angles
-            tick={{ fill: "#FFFFFF", fontSize: 12 }} // Configuration des ticks de l'axe
-            tickFormatter={(value) => translate(value)} // Traduction des termes
+            tick={{ fill: "#FFFFFF", fontSize: 12 }} // Style des ticks de l'axe
+            tickFormatter={(value) => translate(value)} // Traduction des termes en français
           />
           {/* Suppression des ticks et de la ligne de l'axe radial */}
           <PolarRadiusAxis tick={false} axisLine={false} />
+          {/* Le graphique radar qui affiche les valeurs de performance */}
           <Radar
             name="Utilisateur"
-            dataKey="value"
-            stroke="#FF0101"
-            fill="#FF0101"
-            fillOpacity={0.6}
+            dataKey="value" // Utilisation de la clé 'value' pour les valeurs du radar
+            stroke="#FF0101" // Couleur du contour
+            fill="#FF0101" // Couleur de remplissage
+            fillOpacity={0.6} // Transparence du remplissage
           />
         </RadarChart>
       </ResponsiveContainer>

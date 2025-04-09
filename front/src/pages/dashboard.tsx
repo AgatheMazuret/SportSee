@@ -1,6 +1,5 @@
 import Header from "../header";
 import Sidebar from "../sidebar";
-import Hello from "../hello";
 import ActivityChart from "../components/activity-chart";
 import SectionLengthChart from "../components/section-length-chart";
 import SpentEnergyChart from "../components/performance-chart";
@@ -27,10 +26,6 @@ const App = ({ propUserId }: { propUserId?: number }) => {
       <div className="flex h-screen">
         <Sidebar />
         <div className="flex-1 xl:p-[68px_70px_70px_65px] md:p-[20px_8px_20px_16px]">
-          <div className="mb-20">
-            {/* Passer userId comme prop au composant Hello */}
-            <Hello userId={userId} />
-          </div>
           <div className="flex w-full gap-8">
             <div className="flex-1 flex flex-col gap-8">
               {/* Afficher le graphique des activités */}
