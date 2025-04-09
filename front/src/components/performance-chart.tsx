@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { fetchPerformanceData } from "../services/api";
+import { formatPerformanceData } from "../utils/formatter";
 
 // Dictionnaire de traduction des termes pour les sujets de performance
 const translations = {
@@ -43,39 +44,14 @@ const PerformanceChart = ({ userId: propUserId }: { userId?: number }) => {
   } = useQuery({
     queryKey: ["performanceData", userId], // Clé de la requête pour la mise en cache
     queryFn: () => fetchPerformanceData(userId), // Fonction pour récupérer les données depuis l'API
+    staleTime: 1000 * 60 * 5,
   });
 
   // Gestion des états de chargement et d'erreur
   if (isLoading) return <div>Chargement...</div>; // Affiche un message de chargement
   if (error || !data.length) return <div>Aucune donnée disponible</div>; // Affiche un message d'erreur ou si aucune donnée n'est présente
 
-  // Réorganiser les données pour correspondre à l'ordre des sujets du graphique
-  const orderedData = [
-    {
-      subject: "intensity",
-      value: data.find((item) => item.subject === "intensity")?.value || 0,
-    },
-    {
-      subject: "speed",
-      value: data.find((item) => item.subject === "speed")?.value || 0,
-    },
-    {
-      subject: "strength",
-      value: data.find((item) => item.subject === "strength")?.value || 0,
-    },
-    {
-      subject: "endurance",
-      value: data.find((item) => item.subject === "endurance")?.value || 0,
-    },
-    {
-      subject: "energy",
-      value: data.find((item) => item.subject === "energy")?.value || 0,
-    },
-    {
-      subject: "cardio",
-      value: data.find((item) => item.subject === "cardio")?.value || 0,
-    },
-  ];
+  const orderedData = formatPerformanceData(data);
 
   // Affichage du graphique radar avec les données de performance
   return (

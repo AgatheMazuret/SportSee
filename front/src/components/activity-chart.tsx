@@ -7,9 +7,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { fetchActivityData } from "../services/api";
+import { fetchActivityData, fetchUserInfo } from "../services/api";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import ErrorMessage from "./error-message";
 
 // ========== Types communs ==========
@@ -80,36 +79,26 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
 
 // Composant pour afficher un message personnalisé à l'utilisateur
 const Hello = ({ userId }: { userId: number }) => {
-  const [firstName, setFirstName] = useState<string | null>(null); // État pour le prénom
+  const userInfoQuery = useQuery({
+    queryKey: ["userInfo", userId],
+    queryFn: () => fetchUserInfo(userId),
+    staleTime: 1000 * 60 * 5,
+  });
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch(`http://localhost:3000/user/${userId}`); // Appel à l'API pour récupérer l'utilisateur
-        if (!response.ok) throw new Error("Problème avec l'appel à l'API");
-
-        const result = await response.json();
-        setFirstName(
-          result?.data?.userInfos?.firstName || "Utilisateur inconnu" // Récupère le prénom
-        );
-      } catch (error) {
-        console.error("Erreur lors du fetch :", error);
-        setFirstName("Erreur"); // Gestion des erreurs
-      }
-    };
-
-    fetchUser(); // Appel de la fonction pour récupérer les données utilisateur
-  }, [userId]); // Relancer l'effet lorsque userId change
-
+  const { data, error, isLoading } = userInfoQuery;
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-start justify-center mb-6">
+        <p className="text-5xl">Chargement...</p>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col items-start justify-center mb-6">
       <p className="text-5xl">
-        Bonjour{" "}
-        <span className="text-red-500">
-          {firstName === null ? "Chargement..." : firstName}
-        </span>
+        Bonjour <span className="text-red-500">{data?.firstName}</span>
       </p>
-      {firstName && firstName !== "Erreur" && (
+      {!error && (
         <p className="text-lg mt-[41px]">
           Félicitations ! Vous avez explosé vos objectifs hier 👏
         </p>
